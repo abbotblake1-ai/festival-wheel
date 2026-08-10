@@ -24,24 +24,33 @@
       .forEach(x=>x.remove());
   }
 
+  function withSilentConfirm(fn){
+    const wins=[];
+    let w=ed.defaultView;
+    for(let i=0;i<5&&w;i++){
+      if(!wins.includes(w))wins.push(w);
+      try{if(w===w.parent)break;w=w.parent}catch(e){break}
+    }
+    try{if(ed.defaultView.top&&!wins.includes(ed.defaultView.top))wins.push(ed.defaultView.top)}catch(e){}
+    const olds=wins.map(x=>{try{return [x,x.confirm]}catch(e){return [x,null]}});
+    olds.forEach(([x])=>{try{x.confirm=()=>true}catch(e){}});
+    try{fn()}finally{
+      setTimeout(()=>olds.forEach(([x,old])=>{try{if(old)x.confirm=old}catch(e){}}),30);
+    }
+  }
+
   function silentRemoveExtras(){
     const extras=methodCards().filter(card=>{
       const name=card.querySelector('.method-top b')?.textContent.trim();
       return name&&!DEFAULTS.includes(name);
     });
     if(!extras.length)return;
-
-    const win=ed.defaultView;
-    const oldConfirm=win.confirm;
-    win.confirm=()=>true;
-    try{
+    withSilentConfirm(()=>{
       extras.forEach(card=>{
         const btn=card.querySelector('[data-rm]');
         if(btn)btn.click();
       });
-    }finally{
-      setTimeout(()=>{win.confirm=oldConfirm},0);
-    }
+    });
   }
 
   function addContinuousIfMissing(done){
@@ -64,7 +73,7 @@
     if(initialized||!onChanceStep())return;
     initialized=true;
     silentRemoveExtras();
-    setTimeout(()=>addContinuousIfMissing(()=>setTimeout(silentRemoveExtras,30)),60);
+    setTimeout(()=>addContinuousIfMissing(()=>setTimeout(silentRemoveExtras,40)),80);
   }
 
   ed.addEventListener('click',e=>{
