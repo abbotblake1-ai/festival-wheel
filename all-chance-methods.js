@@ -24,6 +24,26 @@
       .forEach(x=>x.remove());
   }
 
+  function silentRemoveExtras(){
+    const extras=methodCards().filter(card=>{
+      const name=card.querySelector('.method-top b')?.textContent.trim();
+      return name&&!DEFAULTS.includes(name);
+    });
+    if(!extras.length)return;
+
+    const win=ed.defaultView;
+    const oldConfirm=win.confirm;
+    win.confirm=()=>true;
+    try{
+      extras.forEach(card=>{
+        const btn=card.querySelector('[data-rm]');
+        if(btn)btn.click();
+      });
+    }finally{
+      setTimeout(()=>{win.confirm=oldConfirm},0);
+    }
+  }
+
   function addContinuousIfMissing(done){
     if(currentNames().includes('连续登录')){done&&done();return;}
     const add=ed.getElementById('addMethod');
@@ -43,21 +63,8 @@
   function normalizeDefaults(){
     if(initialized||!onChanceStep())return;
     initialized=true;
-
-    const removeExtras=()=>{
-      const extras=methodCards().filter(card=>{
-        const name=card.querySelector('.method-top b')?.textContent.trim();
-        return name&&!DEFAULTS.includes(name);
-      });
-      if(!extras.length)return;
-      extras.forEach(card=>{
-        const btn=card.querySelector('[data-rm]');
-        if(btn)btn.click();
-      });
-    };
-
-    removeExtras();
-    setTimeout(()=>addContinuousIfMissing(()=>setTimeout(removeExtras,30)),60);
+    silentRemoveExtras();
+    setTimeout(()=>addContinuousIfMissing(()=>setTimeout(silentRemoveExtras,30)),60);
   }
 
   ed.addEventListener('click',e=>{
