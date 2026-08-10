@@ -39,6 +39,12 @@ app.onload=()=>{
               p.src='prize-config.js?t='+Date.now();
               ed.body.appendChild(p);
             }
+            if(!ed.getElementById('prizeUiPatchScript')){
+              const pp=ed.createElement('script');
+              pp.id='prizeUiPatchScript';
+              pp.src='prize-ui-patch.js?t='+Date.now();
+              ed.body.appendChild(pp);
+            }
 
             const applyVenueDropdown=()=>{
               const labels=[...ed.querySelectorAll('.field>label,.cc-field>label')];
