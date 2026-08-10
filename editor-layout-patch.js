@@ -1,22 +1,51 @@
 (()=>{
   const d=document;
+  const desired=['基础信息','获取抽奖机会','奖品配置','页面配置','活动规则','参与范围'];
+
+  function normalizeName(text){
+    return (text||'')
+      .replace(/^\s*\d+\.\s*/,'')
+      .replace('页面装修','页面配置')
+      .trim();
+  }
+
   function patch(){
     const tabs=d.getElementById('tabs');
     if(tabs){
       const nodes=[...tabs.querySelectorAll('.tab')];
-      const byName=name=>nodes.find(x=>x.textContent.includes(name));
-      const order=[byName('基础信息'),byName('获取抽奖机会'),byName('奖品配置'),byName('页面装修')||byName('页面配置'),byName('活动规则'),byName('参与范围')].filter(Boolean);
-      if(order.length){
-        order.forEach((node,i)=>{
-          const label=node.textContent.replace(/^\s*\d+\.\s*/,'').replace('页面装修','页面配置');
-          node.textContent=`${i+1}. ${label}`;
-          tabs.appendChild(node);
-        });
+      const map=new Map(nodes.map(node=>[normalizeName(node.textContent),node]));
+      const order=desired.map(name=>map.get(name)).filter(Boolean);
+
+      const current=nodes.map(node=>normalizeName(node.textContent));
+      const target=order.map(node=>normalizeName(node.textContent));
+      const needsReorder=current.length!==target.length || current.some((name,i)=>name!==target[i]);
+
+      if(needsReorder){
+        order.forEach(node=>tabs.appendChild(node));
       }
-      [...tabs.querySelectorAll('.tab')].forEach(x=>{if(x.textContent.includes('页面装修'))x.textContent=x.textContent.replace('页面装修','页面配置')});
+
+      [...tabs.querySelectorAll('.tab')].forEach((node,i)=>{
+        const label=normalizeName(node.textContent);
+        const expected=`${i+1}. ${label}`;
+        if(node.textContent.trim()!==expected) node.textContent=expected;
+      });
     }
-    [...d.querySelectorAll('.card-h')].forEach(x=>{if(x.textContent.trim()==='页面装修')x.textContent='页面配置'});
+
+    [...d.querySelectorAll('.card-h')].forEach(node=>{
+      if(node.textContent.trim()==='页面装修') node.textContent='页面配置';
+    });
   }
+
+  let queued=false;
+  const schedulePatch=()=>{
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{
+      queued=false;
+      patch();
+    });
+  };
+
   patch();
-  new MutationObserver(()=>setTimeout(patch,0)).observe(d.body,{childList:true,subtree:true});
+  new MutationObserver(schedulePatch).observe(d.body,{childList:true,subtree:true});
 })();
