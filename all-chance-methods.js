@@ -1,46 +1,77 @@
 (()=>{
   const ed=document;
-  const TARGET=['投注赠送','充值赠送','每日登录','连续登录','累计登录','邀请好友','首次充值','注册赠送'];
-  let running=false;
-  function onChanceStep(){const t=ed.querySelector('#tabs .tab.on');return !!(t&&t.textContent.includes('获取抽奖机会'))}
-  function currentNames(){return [...ed.querySelectorAll('.method .method-top b')].map(x=>x.textContent.trim())}
-  function scrubManual(){
-    const manual=[...ed.querySelectorAll('.method')].find(x=>x.querySelector('.method-top b')?.textContent.trim()==='后台赠送');
-    if(manual){const btn=manual.querySelector('[data-rm]');if(btn)btn.click();else manual.remove()}
+  const DEFAULTS=['投注赠送','连续登录'];
+  let initialized=false;
+
+  function onChanceStep(){
+    const t=ed.querySelector('#tabs .tab.on');
+    return !!(t&&t.textContent.includes('获取抽奖机会'));
+  }
+
+  function methodCards(){
+    return [...ed.querySelectorAll('.method')];
+  }
+
+  function currentNames(){
+    return methodCards().map(x=>x.querySelector('.method-top b')?.textContent.trim()).filter(Boolean);
+  }
+
+  function removeManualFromModal(){
     const modal=ed.getElementById('methodModal');
-    if(modal){[...modal.querySelectorAll('.method-choice')].filter(x=>x.textContent.trim()==='后台赠送').forEach(x=>x.remove())}
+    if(!modal)return;
+    [...modal.querySelectorAll('.method-choice')]
+      .filter(x=>x.textContent.trim()==='后台赠送')
+      .forEach(x=>x.remove());
   }
-  function addMissing(){
-    if(running||!onChanceStep())return;
-    scrubManual();
+
+  function addContinuousIfMissing(done){
+    if(currentNames().includes('连续登录')){done&&done();return;}
     const add=ed.getElementById('addMethod');
-    if(!add)return;
-    const missing=TARGET.filter(x=>!currentNames().includes(x));
-    if(!missing.length)return;
-    running=true;
-    const next=()=>{
-      if(!onChanceStep()){running=false;return}
-      scrubManual();
-      const names=currentNames();
-      const left=TARGET.filter(x=>!names.includes(x));
-      if(!left.length){running=false;return}
-      const btn=ed.getElementById('addMethod');
-      if(!btn){running=false;return}
-      btn.click();
-      setTimeout(()=>{
-        scrubManual();
-        const modal=ed.getElementById('methodModal');
-        if(!modal){running=false;return}
-        const choice=[...modal.querySelectorAll('.method-choice:not(.used)')].find(x=>x.textContent.trim()===left[0]);
-        if(!choice){modal.style.display='none';running=false;return}
-        choice.click();
-        setTimeout(next,60);
-      },30);
-    };
-    next();
+    if(!add){done&&done();return;}
+    add.click();
+    setTimeout(()=>{
+      removeManualFromModal();
+      const modal=ed.getElementById('methodModal');
+      const choice=modal&&[...modal.querySelectorAll('.method-choice')]
+        .find(x=>x.textContent.trim()==='连续登录'&&!x.classList.contains('used'));
+      if(choice)choice.click();
+      else if(modal)modal.style.display='none';
+      setTimeout(()=>done&&done(),40);
+    },40);
   }
-  const obs=new MutationObserver(()=>setTimeout(()=>{scrubManual();addMissing()},20));
+
+  function normalizeDefaults(){
+    if(initialized||!onChanceStep())return;
+    initialized=true;
+
+    const removeExtras=()=>{
+      const extras=methodCards().filter(card=>{
+        const name=card.querySelector('.method-top b')?.textContent.trim();
+        return name&&!DEFAULTS.includes(name);
+      });
+      if(!extras.length)return;
+      extras.forEach(card=>{
+        const btn=card.querySelector('[data-rm]');
+        if(btn)btn.click();
+      });
+    };
+
+    removeExtras();
+    setTimeout(()=>addContinuousIfMissing(()=>setTimeout(removeExtras,30)),60);
+  }
+
+  ed.addEventListener('click',e=>{
+    if(e.target?.id==='addMethod'||e.target?.closest?.('#addMethod')){
+      setTimeout(removeManualFromModal,30);
+    }
+    setTimeout(normalizeDefaults,20);
+  },true);
+
+  const obs=new MutationObserver(()=>{
+    if(!initialized)setTimeout(normalizeDefaults,20);
+    setTimeout(removeManualFromModal,20);
+  });
   obs.observe(ed.body,{childList:true,subtree:true});
-  ed.addEventListener('click',()=>setTimeout(()=>{scrubManual();addMissing()},30),true);
-  setTimeout(()=>{scrubManual();addMissing()},80);
+
+  setTimeout(normalizeDefaults,100);
 })();
