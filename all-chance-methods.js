@@ -1,11 +1,17 @@
 (()=>{
   const ed=document;
-  const TARGET=['投注赠送','充值赠送','每日登录','连续登录','累计登录','邀请好友','首次充值','注册赠送','后台赠送'];
+  const TARGET=['投注赠送','充值赠送','每日登录','连续登录','累计登录','邀请好友','首次充值','注册赠送'];
   let running=false;
   function onChanceStep(){const t=ed.querySelector('#tabs .tab.on');return !!(t&&t.textContent.includes('获取抽奖机会'))}
   function currentNames(){return [...ed.querySelectorAll('.method .method-top b')].map(x=>x.textContent.trim())}
+  function removeManual(){
+    if(!onChanceStep())return;
+    const manual=[...ed.querySelectorAll('.method')].find(x=>x.querySelector('.method-top b')?.textContent.trim()==='后台赠送');
+    if(manual){const btn=manual.querySelector('[data-rm]');if(btn)btn.click()}
+  }
   function addMissing(){
     if(running||!onChanceStep())return;
+    removeManual();
     const add=ed.getElementById('addMethod');
     if(!add)return;
     const missing=TARGET.filter(x=>!currentNames().includes(x));
