@@ -22,6 +22,7 @@ app.onload=()=>{
             if(!ed.getElementById('prizeConfigScript')){const p=ed.createElement('script');p.id='prizeConfigScript';p.src='prize-config.js?t='+Date.now();ed.body.appendChild(p)}
             if(!ed.getElementById('prizeUiPatchScript')){const pp=ed.createElement('script');pp.id='prizeUiPatchScript';pp.src='prize-ui-patch.js?t='+Date.now();ed.body.appendChild(pp)}
             if(!ed.getElementById('editorLayoutPatchScript')){const ep=ed.createElement('script');ep.id='editorLayoutPatchScript';ep.src='editor-layout-patch.js?t='+Date.now();ed.body.appendChild(ep)}
+            if(!ed.getElementById('winnerDisplayScript')){const wd=ed.createElement('script');wd.id='winnerDisplayScript';wd.src='display-winner-list.js?t='+Date.now();ed.body.appendChild(wd)}
             const applyVenueDropdown=()=>{
               const labels=[...ed.querySelectorAll('.field>label,.cc-field>label')];
               const label=labels.find(x=>x.textContent.replace('*','').trim()==='投注范围');
