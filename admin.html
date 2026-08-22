@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"><title>节日转盘后台管理系统</title><style>html,body,#app{margin:0;width:100%;height:100%;overflow:hidden}iframe{border:0;width:100%;height:100%;display:block}</style></head><body><iframe id="app" src="main-v3.html"></iframe><script>
+const app=document.getElementById('app');
+app.onload=()=>{
+  try{
+    const outerDoc=app.contentDocument;
+    const mainFrame=outerDoc.getElementById('main');
+    if(!mainFrame) return;
+    const installIntoMain=()=>{
+      try{
+        const mainDoc=mainFrame.contentDocument;
+        if(!mainDoc) return;
+        if(!mainDoc.getElementById('manualGiftScript')){
+          const mg=mainDoc.createElement('script');mg.id='manualGiftScript';mg.src='manual-gift.js?t='+Date.now();mainDoc.body.appendChild(mg);
+        }
+        const editorFrame=mainDoc.getElementById('editorFrame');
+        if(!editorFrame) return;
+        const enhanceEditor=()=>{
+          try{
+            const ed=editorFrame.contentDocument;
+            if(!ed||!ed.body) return;
+            if(!ed.getElementById('allChanceMethodsScript')){const s=ed.createElement('script');s.id='allChanceMethodsScript';s.src='all-chance-methods.js?t='+Date.now();ed.body.appendChild(s)}
+            if(!ed.getElementById('prizeConfigScript')){const p=ed.createElement('script');p.id='prizeConfigScript';p.src='prize-config.js?t='+Date.now();ed.body.appendChild(p)}
+            if(!ed.getElementById('prizeUiPatchScript')){const pp=ed.createElement('script');pp.id='prizeUiPatchScript';pp.src='prize-ui-patch.js?t='+Date.now();ed.body.appendChild(pp)}
+            if(!ed.getElementById('editorLayoutPatchScript')){const ep=ed.createElement('script');ep.id='editorLayoutPatchScript';ep.src='editor-layout-patch.js?t='+Date.now();ed.body.appendChild(ep)}
+            if(!ed.getElementById('winnerDisplayScript')){const wd=ed.createElement('script');wd.id='winnerDisplayScript';wd.src='display-winner-list.js?t='+Date.now();ed.body.appendChild(wd)}
+            const applyVenueDropdown=()=>{
+              const labels=[...ed.querySelectorAll('.field>label,.cc-field>label')];
+              const label=labels.find(x=>x.textContent.replace('*','').trim()==='投注范围');
+              if(!label) return;
+              const field=label.parentElement;
+              if(field.querySelector('select[data-venue-scope="1"]')) return;
+              const radios=[...field.querySelectorAll('input[type="radio"]')];let selected='all';
+              radios.forEach(r=>{if(r.checked&&/指定/.test(r.parentElement?.textContent||'')) selected='specified'});
+              [...field.children].slice(1).forEach(x=>x.remove());
+              const sel=ed.createElement('select');sel.className=field.classList.contains('cc-field')?'cc-select':'select';sel.dataset.venueScope='1';sel.innerHTML='<option value="all">全部场馆</option><option value="specified">指定场馆</option>';sel.value=selected;
+              const venues=ed.createElement('div');venues.className=field.classList.contains('cc-field')?'cc-subbox':'venue-row';venues.style.display=selected==='specified'?'block':'none';venues.innerHTML='<div style="margin:12px 0 8px;font-weight:600">指定场馆（可多选）</div><div style="display:flex;gap:20px;flex-wrap:wrap"><label class="check"><input type="checkbox">体育</label><label class="check"><input type="checkbox">电子</label><label class="check"><input type="checkbox">电竞</label><label class="check"><input type="checkbox">彩票</label><label class="check"><input type="checkbox">捕鱼</label><label class="check"><input type="checkbox">真人</label></div>';
+              sel.onchange=()=>venues.style.display=sel.value==='specified'?'block':'none';field.appendChild(sel);field.appendChild(venues);
+            };
+            const scrubManual=()=>{[...ed.querySelectorAll('.method')].filter(x=>x.querySelector('.method-top b')?.textContent.trim()==='后台赠送').forEach(x=>x.remove());const modal=ed.getElementById('methodModal');if(modal){[...modal.querySelectorAll('.method-choice')].filter(x=>x.textContent.trim()==='后台赠送').forEach(x=>x.remove())}};
+            const patch=()=>{applyVenueDropdown();scrubManual()};patch();
+            if(!ed.body.dataset.liveFixObserver){ed.body.dataset.liveFixObserver='1';new MutationObserver(()=>setTimeout(patch,0)).observe(ed.body,{childList:true,subtree:true})}
+          }catch(e){console.error(e)}
+        };
+        editorFrame.addEventListener('load',()=>setTimeout(enhanceEditor,80));
+        setInterval(()=>{try{if(editorFrame.contentDocument&&editorFrame.contentDocument.body&&editorFrame.src!=='about:blank') enhanceEditor()}catch(e){}},500);
+      }catch(e){console.error(e)}
+    };
+    mainFrame.addEventListener('load',()=>setTimeout(installIntoMain,50));
+    setTimeout(installIntoMain,100);
+  }catch(e){console.error(e)}
+};
+</script></body></html>
