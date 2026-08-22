@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 620">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7b0505"/><stop offset=".42" stop-color="#d93017"/><stop offset="1" stop-color="#7a0805"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#ffd66c"/><stop offset=".35" stop-color="#ff9b35" stop-opacity=".7"/><stop offset="1" stop-color="#c91f11" stop-opacity="0"/></radialGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff2a6"/><stop offset=".5" stop-color="#ffd35b"/><stop offset="1" stop-color="#f49a1f"/></linearGradient>
+ <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8b120b"/><stop offset=".5" stop-color="#e24220"/><stop offset="1" stop-color="#8b120b"/></linearGradient>
+</defs>
+<rect width="1600" height="620" fill="url(#bg)"/>
+<circle cx="850" cy="180" r="330" fill="url(#sun)"/>
+<path d="M0 80 C190 10 310 50 470 160 C610 255 770 260 910 170 C1090 55 1280 0 1600 70 L1600 0 L0 0Z" fill="#c9150d" opacity=".86"/>
+<path d="M0 210 C190 110 360 190 520 300 C670 405 820 420 960 345 C1130 255 1310 190 1600 245 L1600 620 L0 620Z" fill="#b40c09" opacity=".35"/>
+<!-- stars -->
+<g fill="#ffd54c"><polygon points="105,72 121,110 162,113 131,139 141,179 105,156 70,179 80,139 48,113 90,110"/><circle cx="190" cy="80" r="13"/><circle cx="225" cy="130" r="10"/></g>
+<!-- lanterns -->
+<g transform="translate(1380,10)"><ellipse cx="90" cy="86" rx="66" ry="82" fill="#d51e12" stroke="#ffbf43" stroke-width="8"/><path d="M40 64h100M42 95h96" stroke="#ff8d29" stroke-width="5" opacity=".8"/><rect x="58" y="0" width="64" height="18" rx="5" fill="#f5aa29"/><rect x="63" y="166" width="54" height="13" fill="#f5aa29"/><path d="M90 179v76" stroke="#f5aa29" stroke-width="9"/><path d="M72 250l18 34 18-34" fill="#f5aa29"/></g>
+<!-- fireworks decoration -->
+<g stroke="#ffd95d" stroke-width="4" opacity=".8"><g transform="translate(350 120)"><path d="M0 0v-80M0 0l58-58M0 0h82M0 0l60 58M0 0v82M0 0l-58 58M0 0h-82M0 0l-58-58"/></g><g transform="translate(1180 120) scale(.8)"><path d="M0 0v-80M0 0l58-58M0 0h82M0 0l60 58M0 0v82M0 0l-58 58M0 0h-82M0 0l-58-58"/></g></g>
+<!-- skyline -->
+<g fill="#7f180f" opacity=".8"><rect x="110" y="440" width="55" height="120"/><rect x="180" y="402" width="72" height="158"/><rect x="265" y="455" width="48" height="105"/><rect x="1270" y="400" width="50" height="160"/><rect x="1334" y="445" width="72" height="115"/><rect x="1420" y="385" width="58" height="175"/></g>
+<!-- palace -->
+<g transform="translate(500,390)"><rect x="40" y="95" width="520" height="80" fill="#a3190d" stroke="#f3b13b" stroke-width="5"/><path d="M0 95 L300 15 L600 95 Z" fill="#b71c12" stroke="#f2b840" stroke-width="7"/><path d="M75 82 L300 28 L525 82 Z" fill="#d13b1e"/><g fill="#f5c355"><rect x="80" y="110" width="12" height="60"/><rect x="160" y="110" width="12" height="60"/><rect x="240" y="110" width="12" height="60"/><rect x="320" y="110" width="12" height="60"/><rect x="400" y="110" width="12" height="60"/><rect x="480" y="110" width="12" height="60"/></g></g>
+<!-- title -->
+<g text-anchor="middle" font-family="Microsoft YaHei, sans-serif"><text x="800" y="245" font-size="92" font-weight="900" fill="url(#gold)" stroke="#a72a13" stroke-width="6" paint-order="stroke">国庆豪礼大转盘</text><path d="M530 285h540l-45 70H575z" fill="url(#ribbon)" stroke="#f0ad35" stroke-width="3"/><text x="800" y="333" font-size="34" font-weight="800" fill="#fff0b8">幸运转不停 · 豪礼享不停</text></g>
+<!-- gifts -->
+<g transform="translate(1120,440)"><rect x="0" y="55" width="120" height="100" rx="8" fill="#c91a11" stroke="#f6bd3b" stroke-width="6"/><rect x="54" y="55" width="16" height="100" fill="#f6bd3b"/><path d="M60 55 C10 5 5 60 60 70 C115 60 110 5 60 55Z" fill="#f6bd3b"/></g>
+<g transform="translate(300,485) scale(.8)"><rect x="0" y="35" width="110" height="80" rx="8" fill="#d52a17" stroke="#f6bd3b" stroke-width="6"/><rect x="48" y="35" width="14" height="80" fill="#f6bd3b"/></g>
+</svg>
