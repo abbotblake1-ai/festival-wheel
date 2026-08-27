@@ -4,53 +4,137 @@ app.onload=()=>{
   try{
     const outerDoc=app.contentDocument;
     const mainFrame=outerDoc.getElementById('main');
-    if(!mainFrame) return;
+    if(!mainFrame)return;
     const installIntoMain=()=>{
       try{
         const mainDoc=mainFrame.contentDocument;
-        if(!mainDoc) return;
+        const mainWin=mainFrame.contentWindow;
+        if(!mainDoc||!mainDoc.body)return;
+
+        const ensureTemplateCenter=()=>{
+          if(mainDoc.getElementById('templateCenterPage'))return;
+          const navList=mainDoc.getElementById('navList');
+          const navPrize=mainDoc.getElementById('navPrize');
+          const main=mainDoc.querySelector('main.main');
+          if(!navList||!main)return;
+
+          const style=mainDoc.createElement('style');
+          style.id='templateCenterStyle';
+          style.textContent=`
+            .tpl-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+            .tpl-title{font-size:24px;font-weight:700;margin-bottom:5px}.tpl-desc{color:#7b8492}
+            .tpl-tabs{display:flex;gap:30px;border-bottom:1px solid #eee;margin-bottom:18px}
+            .tpl-tab{padding:10px 2px 12px;cursor:pointer}.tpl-tab.on{color:#1677ff;border-bottom:2px solid #1677ff}
+            .tpl-filter{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+            .tpl-grid{display:grid;grid-template-columns:repeat(3,minmax(230px,1fr));gap:18px}
+            .tpl-card{border:1px solid #e3e7ed;border-radius:8px;overflow:hidden;background:#fff;transition:.2s}
+            .tpl-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(20,50,80,.12);border-color:#91caff}
+            .tpl-cover{height:116px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
+            .tpl-type{position:absolute;right:10px;top:10px;color:#fff;background:rgba(0,0,0,.35);padding:2px 8px;border-radius:10px;font-size:12px}
+            .tpl-red{background:linear-gradient(135deg,#ee4c3c,#a4161f)}.tpl-gold{background:linear-gradient(135deg,#ffbb36,#e96519)}
+            .tpl-purple{background:linear-gradient(135deg,#8a72ef,#4935b6)}.tpl-blue{background:linear-gradient(135deg,#41a7ed,#1766bc)}
+            .tpl-green{background:linear-gradient(135deg,#37bca9,#148775)}.tpl-pink{background:linear-gradient(135deg,#ef80aa,#be3c79)}
+            .tpl-body{padding:14px 15px}.tpl-name{font-size:16px;font-weight:700}.tpl-text{height:42px;color:#7b8492;font-size:13px;margin:7px 0}
+            .tpl-meta{font-size:12px;color:#98a2b3}.tpl-foot{padding:10px 15px;border-top:1px solid #eee;background:#fafbfc;text-align:right}
+            .tpl-foot button{margin-left:8px}.tpl-status{float:right;color:#52c41a;font-size:12px}
+            .tpl-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:260;display:none;align-items:center;justify-content:center}
+            .tpl-modal-box{width:520px;background:#fff;border-radius:9px;overflow:hidden}.tpl-modal-h{padding:17px 20px;border-bottom:1px solid #eee;font-size:18px;font-weight:700}
+            .tpl-modal-b{padding:22px}.tpl-field{margin-bottom:16px}.tpl-field label{display:block;font-weight:600;margin-bottom:7px}
+            .tpl-field input{width:100%;height:38px;border:1px solid #d4d8df;border-radius:5px;padding:0 10px}.tpl-modal-f{padding:13px 20px;border-top:1px solid #eee;text-align:right}
+            @media(max-width:1100px){.tpl-grid{grid-template-columns:repeat(2,1fr)}}
+          `;
+          mainDoc.head.appendChild(style);
+
+          const nav=mainDoc.createElement('div');
+          nav.id='navTemplateCenter';
+          nav.className='nav sub';
+          nav.textContent='活动模板中心';
+          navList.insertAdjacentElement('afterend',nav);
+
+          const page=mainDoc.createElement('section');
+          page.id='templateCenterPage';
+          page.className='page';
+          page.innerHTML=`
+            <div class="content">
+              <div class="tpl-head"><div><div class="tpl-title">活动模板中心</div><div class="tpl-desc">选择标准活动模板，快速创建运营活动</div></div><button class="btn">模板使用说明</button></div>
+              <div class="panel">
+                <div class="tpl-tabs"><div class="tpl-tab on" data-cat="全部">全部模板</div><div class="tpl-tab" data-cat="抽奖类">抽奖类</div><div class="tpl-tab" data-cat="任务类">任务类</div><div class="tpl-tab" data-cat="赛事类">赛事类</div></div>
+                <div class="tpl-filter"><input id="tplKeyword" class="input" style="width:240px" placeholder="请输入模板名称"><select id="tplStatus" class="select"><option>全部状态</option><option>启用</option><option>停用</option></select><button id="tplSearch" class="btn primary">搜索</button><button id="tplReset" class="btn">重置</button><span id="tplCount" style="margin-left:auto;color:#8c96a3"></span></div>
+                <div id="tplGrid" class="tpl-grid"></div>
+              </div>
+            </div>`;
+          main.appendChild(page);
+
+          const modal=mainDoc.createElement('div');
+          modal.id='tplCreateModal';modal.className='tpl-modal';
+          modal.innerHTML=`<div class="tpl-modal-box"><div class="tpl-modal-h">使用模板创建活动</div><div class="tpl-modal-b"><div class="tpl-field"><label>选择模板</label><input id="tplChosen" disabled></div><div class="tpl-field"><label><span style="color:#f04438">*</span> 活动名称</label><input id="tplActivityName" maxlength="30" placeholder="请输入活动名称，最多30个字符"></div><div style="font-size:12px;color:#8c96a3">确定后将进入该模板原有的活动配置流程。</div></div><div class="tpl-modal-f"><button id="tplCancel" class="btn">取消</button> <button id="tplConfirm" class="btn primary">确定创建</button></div></div>`;
+          mainDoc.body.appendChild(modal);
+
+          const templates=[
+            {name:'大转盘',cat:'抽奖类',icon:'🎡',color:'tpl-gold',desc:'适用于节日转盘、迎财神等多奖项随机抽奖活动。',mode:'wheel'},
+            {name:'礼盒抽奖',cat:'抽奖类',icon:'🎁',color:'tpl-red',desc:'适用于新人礼盒、节日礼盒等随机奖品活动。',mode:'gift'},
+            {name:'翻卡抽奖',cat:'抽奖类',icon:'🃏',color:'tpl-purple',desc:'会员翻选卡牌后随机获得奖励，支持主题素材。',mode:'card'},
+            {name:'每日签到',cat:'任务类',icon:'📅',color:'tpl-blue',desc:'支持连续签到、节点任务及多档奖励配置。',mode:'sign'},
+            {name:'竞猜助威',cat:'赛事类',icon:'🏆',color:'tpl-green',desc:'适用于赛事竞猜、球队助威及奖池瓜分活动。',mode:'guess'},
+            {name:'随机祈福',cat:'抽奖类',icon:'🌕',color:'tpl-pink',desc:'无博彩元素的节日互动，可配置祝福语与随机奖励。',mode:'bless'}
+          ];
+          let cat='全部';
+          const render=()=>{
+            const key=(mainDoc.getElementById('tplKeyword').value||'').trim();
+            const list=templates.filter(x=>(cat==='全部'||x.cat===cat)&&(!key||x.name.includes(key)));
+            mainDoc.getElementById('tplCount').textContent='共 '+list.length+' 个模板';
+            mainDoc.getElementById('tplGrid').innerHTML=list.map(x=>`<div class="tpl-card"><div class="tpl-cover ${x.color}"><span class="tpl-type">${x.cat}</span>${x.icon}</div><div class="tpl-body"><span class="tpl-status">启用</span><div class="tpl-name">${x.name}</div><div class="tpl-text">${x.desc}</div><div class="tpl-meta">标准活动模板</div></div><div class="tpl-foot"><button class="btn tpl-preview" data-name="${x.name}">预览</button><button class="btn primary tpl-use" data-name="${x.name}" data-mode="${x.mode}">使用模板</button></div></div>`).join('');
+            mainDoc.querySelectorAll('.tpl-preview').forEach(b=>b.onclick=()=>alert('预览：'+b.dataset.name));
+            mainDoc.querySelectorAll('.tpl-use').forEach(b=>b.onclick=()=>{mainDoc.getElementById('tplChosen').value=b.dataset.name;modal.dataset.mode=b.dataset.mode;mainDoc.getElementById('tplActivityName').value='';modal.style.display='flex'});
+          };
+          mainDoc.querySelectorAll('.tpl-tab').forEach(t=>t.onclick=()=>{mainDoc.querySelectorAll('.tpl-tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');cat=t.dataset.cat;render()});
+          mainDoc.getElementById('tplSearch').onclick=render;
+          mainDoc.getElementById('tplReset').onclick=()=>{mainDoc.getElementById('tplKeyword').value='';mainDoc.getElementById('tplStatus').value='全部状态';render()};
+          mainDoc.getElementById('tplCancel').onclick=()=>modal.style.display='none';
+          mainDoc.getElementById('tplConfirm').onclick=()=>{const name=mainDoc.getElementById('tplActivityName').value.trim();if(!name){alert('请输入活动名称');return}try{localStorage.setItem('festival_random_draw_template_mode',modal.dataset.mode||'wheel');localStorage.setItem('festival_random_draw_activity_name',name)}catch(e){}modal.style.display='none';if(typeof mainWin.openEditor==='function')mainWin.openEditor(false)};
+          nav.onclick=()=>{mainDoc.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));page.classList.add('on');mainDoc.querySelectorAll('.side .nav').forEach(x=>x.classList.remove('active'));nav.classList.add('active');const crumb=mainDoc.getElementById('crumb');if(crumb)crumb.innerHTML='首页 / 运营管理 / 活动配置管理 / <b>活动模板中心</b>';render()};
+          render();
+
+          const oldShow=mainWin.show;
+          if(typeof oldShow==='function')mainWin.show=function(p){page.classList.remove('on');nav.classList.remove('active');return oldShow(p)};
+          if(navPrize){const old=navPrize.onclick;navPrize.onclick=()=>{page.classList.remove('on');nav.classList.remove('active');if(old)old.call(navPrize)}}
+        };
+
+        ensureTemplateCenter();
+
         const ensureGiftActivity=()=>{
           try{
             const table=mainDoc.querySelector('#list table.table');
             const tbody=table&&table.querySelector('tbody');
-            if(!tbody) return;
+            if(!tbody)return;
             let giftRow=[...tbody.querySelectorAll('tr')].find(tr=>tr.textContent.includes('礼盒抽奖'));
             if(!giftRow){
               giftRow=mainDoc.createElement('tr');
               giftRow.innerHTML='<td>202610010001005 (5)</td><td><span class="status">开启中</span></td><td>礼盒抽奖</td><td><a href="javascript:void(0)" class="gift-edit-link" style="color:#1677ff">礼盒抽奖</a></td><td>2026-09-28 11:00:00</td><td>2026-10-01 00:00:00</td><td><div class="ops"><button class="btn danger">禁用</button><button class="btn link gift-edit-btn">编辑信息</button><button class="btn gift-chance-btn" style="color:#722ed1;border-color:#d3adf7">赠送抽奖次数</button><button class="btn danger">删除</button></div></td>';
               tbody.appendChild(giftRow);
-            } else {
-              const cells=giftRow.querySelectorAll('td');
-              if(cells[2]) cells[2].textContent='礼盒抽奖';
-              if(cells[3]){const a=cells[3].querySelector('a');if(a)a.textContent='礼盒抽奖';else cells[3].textContent='礼盒抽奖';}
-              const ops=cells[6]&&cells[6].querySelector('.ops');
-              if(ops){
-                const chanceBtns=[...ops.querySelectorAll('button')].filter(b=>b.textContent.trim()==='赠送抽奖次数');
-                chanceBtns.slice(1).forEach(b=>b.remove());
-              }
             }
-            const openGift=()=>{try{localStorage.setItem('festival_random_draw_template_mode','gift')}catch(e){};if(mainDoc.defaultView&&typeof mainDoc.defaultView.openEditor==='function')mainDoc.defaultView.openEditor(true)};
+            const openGift=()=>{try{localStorage.setItem('festival_random_draw_template_mode','gift')}catch(e){};if(typeof mainWin.openEditor==='function')mainWin.openEditor(true)};
             const editLink=giftRow.querySelector('.gift-edit-link');if(editLink)editLink.onclick=openGift;
             const editBtn=giftRow.querySelector('.gift-edit-btn');if(editBtn)editBtn.onclick=openGift;
             const typeSelect=[...mainDoc.querySelectorAll('#list select')].find(s=>[...s.options].some(o=>o.text==='大转盘'));
-            if(typeSelect && ![...typeSelect.options].some(o=>o.text==='礼盒抽奖')){const o=mainDoc.createElement('option');o.text='礼盒抽奖';typeSelect.appendChild(o)}
+            if(typeSelect&&![...typeSelect.options].some(o=>o.text==='礼盒抽奖')){const o=mainDoc.createElement('option');o.text='礼盒抽奖';typeSelect.appendChild(o)}
           }catch(e){console.error(e)}
         };
         ensureGiftActivity();
         if(!mainDoc.body.dataset.giftActivityObserver){mainDoc.body.dataset.giftActivityObserver='1';new MutationObserver(()=>setTimeout(ensureGiftActivity,0)).observe(mainDoc.body,{childList:true,subtree:true})}
         if(!mainDoc.getElementById('manualGiftScript')){const mg=mainDoc.createElement('script');mg.id='manualGiftScript';mg.src='manual-gift.js?t='+Date.now();mainDoc.body.appendChild(mg)}
         const editorFrame=mainDoc.getElementById('editorFrame');
-        if(!editorFrame) return;
+        if(!editorFrame)return;
         const enhanceEditor=()=>{
           try{
             const ed=editorFrame.contentDocument;
-            if(!ed||!ed.body) return;
+            if(!ed||!ed.body)return;
             const scripts=[['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js']];
             scripts.forEach(([id,src])=>{if(!ed.getElementById(id)){const s=ed.createElement('script');s.id=id;s.src=src+'?t='+Date.now();ed.body.appendChild(s)}});
           }catch(e){console.error(e)}
         };
         editorFrame.addEventListener('load',()=>setTimeout(enhanceEditor,80));
-        setInterval(()=>{try{if(editorFrame.contentDocument&&editorFrame.contentDocument.body&&editorFrame.src!=='about:blank') enhanceEditor()}catch(e){}},500);
+        setInterval(()=>{try{if(editorFrame.contentDocument&&editorFrame.contentDocument.body&&editorFrame.src!=='about:blank')enhanceEditor()}catch(e){}},500);
       }catch(e){console.error(e)}
     };
     mainFrame.addEventListener('load',()=>setTimeout(installIntoMain,50));
