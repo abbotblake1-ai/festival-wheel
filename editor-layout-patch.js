@@ -1,6 +1,6 @@
 (()=>{
   const d=document;
-  const desired=['基础信息','获取抽奖机会','奖品配置','页面配置','活动规则','参与范围'];
+  const desired=['基础信息','参与范围','获取抽奖机会','奖品配置','页面配置','活动规则'];
 
   function normalizeName(text){
     return (text||'')
