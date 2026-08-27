@@ -23,17 +23,15 @@ app.onload=()=>{
               const cells=giftRow.querySelectorAll('td');
               if(cells[2]) cells[2].textContent='礼盒抽奖';
               if(cells[3]){const a=cells[3].querySelector('a');if(a)a.textContent='礼盒抽奖';else cells[3].textContent='礼盒抽奖';}
+              const ops=cells[6]&&cells[6].querySelector('.ops');
+              if(ops){
+                const chanceBtns=[...ops.querySelectorAll('button')].filter(b=>b.textContent.trim()==='赠送抽奖次数');
+                chanceBtns.slice(1).forEach(b=>b.remove());
+              }
             }
             const openGift=()=>{try{localStorage.setItem('festival_random_draw_template_mode','gift')}catch(e){};if(mainDoc.defaultView&&typeof mainDoc.defaultView.openEditor==='function')mainDoc.defaultView.openEditor(true)};
             const editLink=giftRow.querySelector('.gift-edit-link');if(editLink)editLink.onclick=openGift;
             const editBtn=giftRow.querySelector('.gift-edit-btn');if(editBtn)editBtn.onclick=openGift;
-
-            // 每条活动记录最多只保留一个“赠送抽奖次数”按钮
-            [...tbody.querySelectorAll('tr')].forEach(tr=>{
-              const btns=[...tr.querySelectorAll('button')].filter(b=>b.textContent.trim()==='赠送抽奖次数');
-              btns.slice(1).forEach(b=>b.remove());
-            });
-
             const typeSelect=[...mainDoc.querySelectorAll('#list select')].find(s=>[...s.options].some(o=>o.text==='大转盘'));
             if(typeSelect && ![...typeSelect.options].some(o=>o.text==='礼盒抽奖')){const o=mainDoc.createElement('option');o.text='礼盒抽奖';typeSelect.appendChild(o)}
           }catch(e){console.error(e)}
@@ -47,24 +45,8 @@ app.onload=()=>{
           try{
             const ed=editorFrame.contentDocument;
             if(!ed||!ed.body) return;
-            const scripts=[
-              ['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js']
-            ];
+            const scripts=[['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js']];
             scripts.forEach(([id,src])=>{if(!ed.getElementById(id)){const s=ed.createElement('script');s.id=id;s.src=src+'?t='+Date.now();ed.body.appendChild(s)}});
-            const applyVenueDropdown=()=>{
-              const labels=[...ed.querySelectorAll('.field>label,.cc-field>label')];
-              const label=labels.find(x=>x.textContent.replace('*','').trim()==='投注范围');
-              if(!label) return;
-              const field=label.parentElement;if(field.querySelector('select[data-venue-scope="1"]')) return;
-              const radios=[...field.querySelectorAll('input[type="radio"]')];let selected='all';radios.forEach(r=>{if(r.checked&&/指定/.test(r.parentElement?.textContent||'')) selected='specified'});
-              [...field.children].slice(1).forEach(x=>x.remove());
-              const sel=ed.createElement('select');sel.className=field.classList.contains('cc-field')?'cc-select':'select';sel.dataset.venueScope='1';sel.innerHTML='<option value="all">全部场馆</option><option value="specified">指定场馆</option>';sel.value=selected;
-              const venues=ed.createElement('div');venues.className=field.classList.contains('cc-field')?'cc-subbox':'venue-row';venues.style.display=selected==='specified'?'block':'none';venues.innerHTML='<div style="margin:12px 0 8px;font-weight:600">指定场馆（可多选）</div><div style="display:flex;gap:20px;flex-wrap:wrap"><label class="check"><input type="checkbox">体育</label><label class="check"><input type="checkbox">电子</label><label class="check"><input type="checkbox">电竞</label><label class="check"><input type="checkbox">彩票</label><label class="check"><input type="checkbox">捕鱼</label><label class="check"><input type="checkbox">真人</label></div>';
-              sel.onchange=()=>venues.style.display=sel.value==='specified'?'block':'none';field.appendChild(sel);field.appendChild(venues);
-            };
-            const scrubManual=()=>{[...ed.querySelectorAll('.method')].filter(x=>x.querySelector('.method-top b')?.textContent.trim()==='后台赠送').forEach(x=>x.remove());const modal=ed.getElementById('methodModal');if(modal){[...modal.querySelectorAll('.method-choice')].filter(x=>x.textContent.trim()==='后台赠送').forEach(x=>x.remove())}};
-            const patch=()=>{applyVenueDropdown();scrubManual()};patch();
-            if(!ed.body.dataset.liveFixObserver){ed.body.dataset.liveFixObserver='1';new MutationObserver(()=>setTimeout(patch,0)).observe(ed.body,{childList:true,subtree:true})}
           }catch(e){console.error(e)}
         };
         editorFrame.addEventListener('load',()=>setTimeout(enhanceEditor,80));
