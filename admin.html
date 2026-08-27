@@ -129,7 +129,7 @@ app.onload=()=>{
           try{
             const ed=editorFrame.contentDocument;
             if(!ed||!ed.body)return;
-            const scripts=[['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js']];
+            const scripts=[['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js'],['participantScopeScript','participant-scope.js']];
             scripts.forEach(([id,src])=>{if(!ed.getElementById(id)){const s=ed.createElement('script');s.id=id;s.src=src+'?t='+Date.now();ed.body.appendChild(s)}});
           }catch(e){console.error(e)}
         };
