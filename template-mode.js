@@ -36,18 +36,28 @@
     </div></div></div>
   </div></div></div>`}
 
+  function genericDecorationHtml(){
+    const style=STYLE_MAP[mode]||STYLE_MAP.wheel;
+    return `<div class="card"><div class="card-h">页面配置 · ${style[1]}</div><div class="card-b"><div class="gift-config">
+      <div class="gift-note"><b>当前抽奖样式：${style[1]}。</b> 页面配置项已根据所选样式自动切换。</div>
+      <div class="gift-group"><div class="gift-group-h">1. 公共页面素材</div><div class="gift-group-b"><div class="gift-grid">${uploadField('活动内页顶部图')}${uploadField('活动背景图')}</div></div></div>
+      <div class="gift-group"><div class="gift-group-h">2. ${style[1]}抽奖区域</div><div class="gift-group-b"><div class="gift-grid">${uploadField(style[1]+'区域背景图')}${uploadField(style[1]+'初始状态图')}${uploadField(style[1]+'触发动效图',true,'支持 GIF/PNG/JPG；触发抽奖后展示')}${uploadField(style[1]+'完成状态图',false)}${uploadField('开始抽奖按钮图')}${uploadField('不可抽奖按钮图',false)}</div></div></div>
+      <div class="gift-group"><div class="gift-group-h">3. 中奖结果</div><div class="gift-group-b"><div class="gift-grid">${uploadField('中奖弹窗背景图')}${uploadField('未中奖弹窗背景图',false)}</div></div></div>
+    </div></div></div>`;
+  }
   let originalPageDecor=null;
   function installPageDecorOverride(){
     if(!originalPageDecor && typeof window.pageDecor==='function') originalPageDecor=window.pageDecor;
-    if(originalPageDecor) window.pageDecor=function(){return mode==='gift'?giftDecorationHtml():originalPageDecor()};
+    if(originalPageDecor) window.pageDecor=function(){return mode==='wheel'?originalPageDecor():(mode==='gift'?giftDecorationHtml():genericDecorationHtml())};
   }
-  function bindGiftUploads(){if(mode!=='gift')return;$$('[data-upload]').forEach(x=>{if(x.dataset.bound)return;x.dataset.bound='1';x.onclick=()=>{x.classList.add('done');x.textContent='✓ 已上传（原型）'}})}
+  function bindGiftUploads(){if(mode==='wheel')return;$$('[data-upload]').forEach(x=>{if(x.dataset.bound)return;x.dataset.bound='1';x.onclick=()=>{x.classList.add('done');x.textContent='✓ 已上传（原型）'}})}
   function updateHeader(){const sub=$('.sub');const style=STYLE_MAP[mode]||STYLE_MAP.wheel;if(sub)sub.textContent='随机抽奖模板 · '+(SCENE_MAP[scene]||SCENE_MAP.general)+' · 当前抽奖样式：'+style[1]}
   function forcePageConfig(){
     if(!isPageConfig()) return;
     const body=$('#body');if(!body)return;
-    if(mode==='gift'){
-      if(!body.querySelector('.gift-config')) body.innerHTML=giftDecorationHtml();
+    if(mode!=='wheel'){
+      const desired=mode==='gift'?giftDecorationHtml():genericDecorationHtml();
+      if(!body.querySelector('.gift-config')||!body.textContent.includes((STYLE_MAP[mode]||STYLE_MAP.wheel)[1])) body.innerHTML=desired;
       bindGiftUploads();
     }else if(body.querySelector('.gift-config')){
       if(originalPageDecor) body.innerHTML=originalPageDecor();
