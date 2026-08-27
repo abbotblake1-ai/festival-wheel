@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"><title>随机抽奖模板后台管理系统 v20260827-6</title><style>html,body,#app{margin:0;width:100%;height:100%;overflow:hidden}iframe{border:0;width:100%;height:100%;display:block}</style></head><body><iframe id="app" src="main-v3.html"></iframe><script>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"><title>随机抽奖模板后台管理系统 v20260827-7</title><style>html,body,#app{margin:0;width:100%;height:100%;overflow:hidden}iframe{border:0;width:100%;height:100%;display:block}</style></head><body><iframe id="app" src="main-v3.html"></iframe><script>
 const app=document.getElementById('app');
 app.onload=()=>{
   try{
@@ -58,7 +58,7 @@ app.onload=()=>{
             <div class="content">
               <div class="tpl-head"><div><div class="tpl-title">活动模板中心</div><div class="tpl-desc">选择标准活动模板，快速创建运营活动</div></div><button class="btn">模板使用说明</button></div>
               <div class="panel">
-                <div class="tpl-tabs"><div class="tpl-tab on" data-cat="全部">全部模板</div><div class="tpl-tab" data-cat="抽奖类">抽奖类</div><div class="tpl-tab" data-cat="任务类">任务类</div><div class="tpl-tab" data-cat="赛事类">赛事类</div></div>
+                <div class="tpl-tabs"><div class="tpl-tab on" data-cat="全部">全部模板</div><div class="tpl-tab" data-cat="抽奖类">抽奖类</div></div>
                 <div class="tpl-filter"><input id="tplKeyword" class="input" style="width:240px" placeholder="请输入模板名称"><select id="tplStatus" class="select"><option>全部状态</option><option>启用</option><option>停用</option></select><button id="tplSearch" class="btn primary">搜索</button><button id="tplReset" class="btn">重置</button><span id="tplCount" style="margin-left:auto;color:#8c96a3"></span></div>
                 <div id="tplGrid" class="tpl-grid"></div>
               </div>
@@ -71,12 +71,7 @@ app.onload=()=>{
           mainDoc.body.appendChild(modal);
 
           const templates=[
-            {name:'大转盘',cat:'抽奖类',icon:'🎡',color:'tpl-gold',desc:'适用于节日转盘、迎财神等多奖项随机抽奖活动。',mode:'wheel'},
-            {name:'礼盒抽奖',cat:'抽奖类',icon:'🎁',color:'tpl-red',desc:'适用于新人礼盒、节日礼盒等随机奖品活动。',mode:'gift'},
-            {name:'翻卡抽奖',cat:'抽奖类',icon:'🃏',color:'tpl-purple',desc:'会员翻选卡牌后随机获得奖励，支持主题素材。',mode:'card'},
-            {name:'每日签到',cat:'任务类',icon:'📅',color:'tpl-blue',desc:'支持连续签到、节点任务及多档奖励配置。',mode:'sign'},
-            {name:'竞猜助威',cat:'赛事类',icon:'🏆',color:'tpl-green',desc:'适用于赛事竞猜、球队助威及奖池瓜分活动。',mode:'guess'},
-            {name:'随机祈福',cat:'抽奖类',icon:'🌕',color:'tpl-pink',desc:'无博彩元素的节日互动，可配置祝福语与随机奖励。',mode:'bless'}
+            {name:'随机抽奖模板',cat:'抽奖类',icon:'🎁',color:'tpl-gold',desc:'统一配置参与范围、抽奖机会、奖品概率、库存和发奖逻辑；支持大转盘、礼盒抽奖等多种展示形式。',mode:'random'}
           ];
           let cat='全部';
           const render=()=>{
