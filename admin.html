@@ -101,6 +101,12 @@ app.onload=()=>{
         };
 
         ensureTemplateCenter();
+        if(!mainDoc.getElementById('templateCenterActionsScript')){
+          const tca=mainDoc.createElement('script');
+          tca.id='templateCenterActionsScript';
+          tca.src='template-center-actions.js?t='+Date.now();
+          mainDoc.body.appendChild(tca);
+        }
 
         const ensureGiftActivity=()=>{
           try{
