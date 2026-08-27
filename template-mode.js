@@ -36,7 +36,7 @@
     if(originalPageDecor) window.pageDecor=function(){return mode==='gift'?giftDecorationHtml():originalPageDecor()};
   }
   function bindGiftUploads(){if(mode!=='gift')return;$$('[data-upload]').forEach(x=>{if(x.dataset.bound)return;x.dataset.bound='1';x.onclick=()=>{x.classList.add('done');x.textContent='✓ 已上传（原型）'}})}
-  function updateHeader(){const sub=$('.sub');if(sub)sub.textContent=mode==='gift'?'随机抽奖模板 · 礼盒抽奖':'随机抽奖模板 · 大转盘'}
+  function updateHeader(){const sub=$('.sub');if(sub)sub.textContent='随机抽奖模板 · 当前抽奖样式：'+(mode==='gift'?'礼盒抽奖':'大转盘')}
   function forcePageConfig(){
     if(!isPageConfig()) return;
     const body=$('#body');if(!body)return;
