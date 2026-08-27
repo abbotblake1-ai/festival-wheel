@@ -24,7 +24,7 @@
   mask.className='tc-preview-mask';
   mask.innerHTML=`<div class="tc-preview-box">
     <div class="tc-preview-head"><span class="tc-preview-title" id="tcPreviewTitle">模板前端预览</span><span class="tc-preview-note">仅展示前端效果，不会创建活动</span>
-      <div class="tc-preview-tools"><button class="btn on" id="tcPc">PC预览</button><button class="btn" id="tcH5">H5预览</button><button class="btn" id="tcClose">关闭</button></div>
+      <div class="tc-preview-tools"><button class="btn" id="tcStyleWheel" style="display:none">大转盘</button><button class="btn" id="tcStyleGift" style="display:none">礼盒抽奖</button><button class="btn on" id="tcPc">PC预览</button><button class="btn" id="tcH5">H5预览</button><button class="btn" id="tcClose">关闭</button></div>
     </div>
     <div class="tc-preview-main">
       <iframe class="tc-preview-frame" id="tcFrame"></iframe>
@@ -35,10 +35,12 @@
   document.body.appendChild(mask);
 
   const frame=document.getElementById('tcFrame'),giftDemo=document.getElementById('tcGiftDemo'),unavailable=document.getElementById('tcUnavailable');
-  let current='',previewMode='pc',giftOpened=false;
+  let current='',previewMode='pc',giftOpened=false,randomPreview=false;
   function syncDevice(){
     document.getElementById('tcPc').classList.toggle('on',previewMode==='pc');
     document.getElementById('tcH5').classList.toggle('on',previewMode==='h5');
+    document.getElementById('tcStyleWheel').classList.toggle('on',current==='大转盘');
+    document.getElementById('tcStyleGift').classList.toggle('on',current==='礼盒抽奖');
     if(current==='大转盘'&&frame.contentDocument){
       const btn=frame.contentDocument.getElementById(previewMode==='pc'?'pcBtn':'h5Btn');
       if(btn)btn.click();
@@ -49,13 +51,12 @@
       card.style.padding=previewMode==='h5'?'30px 18px':'38px';
     }
   }
-  function openPreview(name){
-    current=name;previewMode='pc';giftOpened=false;
-    document.getElementById('tcPreviewTitle').textContent=name+' · 前端效果预览';
+  function showPreviewStyle(name){
+    current=name;giftOpened=false;
+    document.getElementById('tcPreviewTitle').textContent=(randomPreview?'随机抽奖模板 · ':'')+name+'前端预览';
     frame.style.display='none';giftDemo.style.display='none';unavailable.style.display='none';
     if(name==='大转盘'){
-      frame.style.display='block';frame.src='frontend.html?t='+Date.now();
-      frame.onload=()=>syncDevice();
+      frame.style.display='block';frame.src='frontend.html?t='+Date.now();frame.onload=()=>syncDevice();
     }else if(name==='礼盒抽奖'){
       giftDemo.style.display='flex';
       document.getElementById('tcGift').classList.remove('open');
@@ -64,8 +65,17 @@
     }else{
       unavailable.style.display='flex';document.getElementById('tcUnavailableName').textContent=name;
     }
-    mask.style.display='flex';syncDevice();
+    syncDevice();
   }
+  function openPreview(name){
+    previewMode='pc';randomPreview=name==='随机抽奖模板';
+    document.getElementById('tcStyleWheel').style.display=randomPreview?'inline-block':'none';
+    document.getElementById('tcStyleGift').style.display=randomPreview?'inline-block':'none';
+    mask.style.display='flex';
+    showPreviewStyle(randomPreview?'大转盘':name);
+  }
+  document.getElementById('tcStyleWheel').onclick=()=>showPreviewStyle('大转盘');
+  document.getElementById('tcStyleGift').onclick=()=>showPreviewStyle('礼盒抽奖');
   function openGift(){
     if(giftOpened){document.getElementById('tcGiftResult').textContent='暂无抽奖次数';return}
     giftOpened=true;const g=document.getElementById('tcGift');g.classList.add('open');g.textContent='🎊';
@@ -80,7 +90,7 @@
 
   function useTemplate(name,mode){
     try{
-      localStorage.setItem('festival_random_draw_template_mode',mode||'wheel');
+      localStorage.setItem('festival_random_draw_template_mode',mode==='random'?'wheel':(mode||'wheel'));
       localStorage.setItem('festival_random_draw_template_name',name);
     }catch(e){}
     const tip=document.createElement('div');tip.className='tc-use-tip';tip.textContent='已选择“'+name+'”模板，正在进入新增活动配置';
@@ -90,7 +100,7 @@
       const editorFrame=document.getElementById('editorFrame');
       if(editor&&editorFrame){
         editor.style.display='block';
-        editorFrame.src='wheel-editor-v5.html?mode=new&template='+encodeURIComponent(mode||'wheel')+'&t='+Date.now();
+        editorFrame.src='wheel-editor-v5.html?mode=new&template='+encodeURIComponent(mode==='random'?'wheel':(mode||'wheel'))+'&t='+Date.now();
       }else if(typeof window.openEditor==='function'){
         window.openEditor(false);
       }else{
