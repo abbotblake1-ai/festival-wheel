@@ -16,7 +16,8 @@
     const title=document.getElementById('pageTitle');
     if(title)title.textContent=(editing?'编辑：':'新增活动｜使用模板：')+(editing?(activityName||defaultName()):template);
     const sub=document.querySelector('.top .sub');
-    if(sub)sub.textContent='随机抽奖模板 · '+template;
+    const currentMode=localStorage.getItem('festival_random_draw_template_mode')||mode;
+    if(sub)sub.textContent='随机抽奖模板 · 当前抽奖样式：'+(currentMode==='gift'?'礼盒抽奖':'大转盘');
   }
 
   function bindActivityName(){
