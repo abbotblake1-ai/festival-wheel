@@ -79,7 +79,7 @@
     }
   });
 
-  const observer=new MutationObserver(()=>{hideDuplicateTemplateMenu();patchListAddButton();renderCreatedActivities()});
+  const observer=new MutationObserver(()=>{hideDuplicateTemplateMenu();patchListAddButton()});
   observer.observe(document.body,{childList:true,subtree:true});
   hideDuplicateTemplateMenu();patchListAddButton();renderCreatedActivities();
 })();
