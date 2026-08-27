@@ -9,6 +9,25 @@ app.onload=()=>{
       try{
         const mainDoc=mainFrame.contentDocument;
         if(!mainDoc) return;
+        const ensureGiftActivity=()=>{
+          try{
+            const table=mainDoc.querySelector('#list table.table');
+            const tbody=table&&table.querySelector('tbody');
+            if(!tbody) return;
+            const exists=[...tbody.querySelectorAll('tr')].some(tr=>tr.textContent.includes('国庆礼盒抽奖'));
+            if(!exists){
+              const tr=mainDoc.createElement('tr');
+              tr.innerHTML='<td>202610010001005 (5)</td><td><span class="status">开启中</span></td><td>礼盒抽奖</td><td><a href="javascript:void(0)" class="gift-edit-link" style="color:#1677ff">国庆礼盒抽奖</a></td><td>2026-09-28 11:00:00</td><td>2026-10-01 00:00:00</td><td><div class="ops"><button class="btn danger">禁用</button><button class="btn link gift-edit-btn">编辑信息</button><button class="btn gift-chance-btn" style="color:#722ed1;border-color:#d3adf7">赠送抽奖次数</button><button class="btn danger">删除</button></div></td>';
+              tbody.appendChild(tr);
+              const openGift=()=>{try{localStorage.setItem('festival_random_draw_template_mode','gift')}catch(e){};if(mainDoc.defaultView&&typeof mainDoc.defaultView.openEditor==='function')mainDoc.defaultView.openEditor(true)};
+              tr.querySelector('.gift-edit-link').onclick=openGift;tr.querySelector('.gift-edit-btn').onclick=openGift;
+            }
+            const typeSelect=[...mainDoc.querySelectorAll('#list select')].find(s=>s.previousSibling&&String(s.previousSibling.textContent||'').includes('活动类型'))||mainDoc.querySelector('#list .select');
+            if(typeSelect && ![...typeSelect.options].some(o=>o.text==='礼盒抽奖')){const o=mainDoc.createElement('option');o.text='礼盒抽奖';typeSelect.appendChild(o)}
+          }catch(e){console.error(e)}
+        };
+        ensureGiftActivity();
+        if(!mainDoc.body.dataset.giftActivityObserver){mainDoc.body.dataset.giftActivityObserver='1';new MutationObserver(()=>setTimeout(ensureGiftActivity,0)).observe(mainDoc.body,{childList:true,subtree:true})}
         if(!mainDoc.getElementById('manualGiftScript')){const mg=mainDoc.createElement('script');mg.id='manualGiftScript';mg.src='manual-gift.js?t='+Date.now();mainDoc.body.appendChild(mg)}
         const editorFrame=mainDoc.getElementById('editorFrame');
         if(!editorFrame) return;
