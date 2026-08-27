@@ -14,15 +14,27 @@ app.onload=()=>{
             const table=mainDoc.querySelector('#list table.table');
             const tbody=table&&table.querySelector('tbody');
             if(!tbody) return;
-            const exists=[...tbody.querySelectorAll('tr')].some(tr=>tr.textContent.includes('国庆礼盒抽奖'));
-            if(!exists){
-              const tr=mainDoc.createElement('tr');
-              tr.innerHTML='<td>202610010001005 (5)</td><td><span class="status">开启中</span></td><td>礼盒抽奖</td><td><a href="javascript:void(0)" class="gift-edit-link" style="color:#1677ff">国庆礼盒抽奖</a></td><td>2026-09-28 11:00:00</td><td>2026-10-01 00:00:00</td><td><div class="ops"><button class="btn danger">禁用</button><button class="btn link gift-edit-btn">编辑信息</button><button class="btn gift-chance-btn" style="color:#722ed1;border-color:#d3adf7">赠送抽奖次数</button><button class="btn danger">删除</button></div></td>';
-              tbody.appendChild(tr);
-              const openGift=()=>{try{localStorage.setItem('festival_random_draw_template_mode','gift')}catch(e){};if(mainDoc.defaultView&&typeof mainDoc.defaultView.openEditor==='function')mainDoc.defaultView.openEditor(true)};
-              tr.querySelector('.gift-edit-link').onclick=openGift;tr.querySelector('.gift-edit-btn').onclick=openGift;
+            let giftRow=[...tbody.querySelectorAll('tr')].find(tr=>tr.textContent.includes('礼盒抽奖'));
+            if(!giftRow){
+              giftRow=mainDoc.createElement('tr');
+              giftRow.innerHTML='<td>202610010001005 (5)</td><td><span class="status">开启中</span></td><td>礼盒抽奖</td><td><a href="javascript:void(0)" class="gift-edit-link" style="color:#1677ff">礼盒抽奖</a></td><td>2026-09-28 11:00:00</td><td>2026-10-01 00:00:00</td><td><div class="ops"><button class="btn danger">禁用</button><button class="btn link gift-edit-btn">编辑信息</button><button class="btn gift-chance-btn" style="color:#722ed1;border-color:#d3adf7">赠送抽奖次数</button><button class="btn danger">删除</button></div></td>';
+              tbody.appendChild(giftRow);
+            } else {
+              const cells=giftRow.querySelectorAll('td');
+              if(cells[2]) cells[2].textContent='礼盒抽奖';
+              if(cells[3]){const a=cells[3].querySelector('a');if(a)a.textContent='礼盒抽奖';else cells[3].textContent='礼盒抽奖';}
             }
-            const typeSelect=[...mainDoc.querySelectorAll('#list select')].find(s=>s.previousSibling&&String(s.previousSibling.textContent||'').includes('活动类型'))||mainDoc.querySelector('#list .select');
+            const openGift=()=>{try{localStorage.setItem('festival_random_draw_template_mode','gift')}catch(e){};if(mainDoc.defaultView&&typeof mainDoc.defaultView.openEditor==='function')mainDoc.defaultView.openEditor(true)};
+            const editLink=giftRow.querySelector('.gift-edit-link');if(editLink)editLink.onclick=openGift;
+            const editBtn=giftRow.querySelector('.gift-edit-btn');if(editBtn)editBtn.onclick=openGift;
+
+            // 每条活动记录最多只保留一个“赠送抽奖次数”按钮
+            [...tbody.querySelectorAll('tr')].forEach(tr=>{
+              const btns=[...tr.querySelectorAll('button')].filter(b=>b.textContent.trim()==='赠送抽奖次数');
+              btns.slice(1).forEach(b=>b.remove());
+            });
+
+            const typeSelect=[...mainDoc.querySelectorAll('#list select')].find(s=>[...s.options].some(o=>o.text==='大转盘'));
             if(typeSelect && ![...typeSelect.options].some(o=>o.text==='礼盒抽奖')){const o=mainDoc.createElement('option');o.text='礼盒抽奖';typeSelect.appendChild(o)}
           }catch(e){console.error(e)}
         };
