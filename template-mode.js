@@ -60,7 +60,20 @@
   function patchBasic(){const body=$('#body');if(!body||$('#templateSelector'))return;const card=body.firstElementChild;if(!card)return;const formGrid=card.querySelector('.form-grid');if(!formGrid)return;formGrid.insertAdjacentHTML('afterbegin',optionHtml());bindSelector()}
   function patch(){installPageDecorOverride();updateHeader();const active=$('.tab.on')?.textContent||'';if(active.includes('基础信息'))patchBasic();if(isPageConfig())forcePageConfig()}
 
-  document.addEventListener('click',e=>{if(e.target.closest('.tab'))setTimeout(patch,40)},true);
+  document.addEventListener('click',e=>{
+    const option=e.target.closest('#templateSelector .tpl-option[data-tpl]');
+    if(option&&!editing){
+      e.preventDefault();
+      e.stopPropagation();
+      mode=option.dataset.tpl;
+      localStorage.setItem(KEY,mode);
+      $('#templateSelector [data-tpl]').forEach(x=>x.classList.toggle('on',x.dataset.tpl===mode));
+      updateHeader();
+      installPageDecorOverride();
+      return;
+    }
+    if(e.target.closest('.tab'))setTimeout(patch,40);
+  },true);
   new MutationObserver(()=>setTimeout(patch,0)).observe(document.body,{childList:true,subtree:true});
   setInterval(patch,300);
   setTimeout(patch,60);
