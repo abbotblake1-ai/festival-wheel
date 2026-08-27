@@ -15,7 +15,7 @@
   function giftDecorationHtml(){return `<div class="card"><div class="card-h">页面配置 · 礼盒抽奖</div><div class="card-b"><div class="gift-config">
     <div class="gift-note"><b>当前展示形式：礼盒抽奖。</b> 当前页面仅展示礼盒所需素材配置，不再展示大转盘底座、外圈、转盘、指针等转盘专属素材。</div>
     <div class="gift-group"><div class="gift-group-h">1. 公共页面素材</div><div class="gift-group-b"><div class="gift-grid">
-      ${uploadField('活动内页顶部图')}${uploadField('活动背景图')}${uploadField('活动内容图',false)}${uploadField('活动规则图',false)}
+      ${uploadField('活动内页顶部图')}${uploadField('活动背景图')}
     </div></div></div>
     <div class="gift-group"><div class="gift-group-h">2. 礼盒抽奖区域</div><div class="gift-group-b"><div class="gift-grid">
       ${uploadField('礼盒区域背景图')}${uploadField('未开启礼盒图')}${uploadField('开启礼盒动效图',true,'支持 GIF/PNG/JPG；点击开启礼盒后展示')}${uploadField('开启完成礼盒图',false)}${uploadField('开启礼盒按钮图')}${uploadField('不可开启按钮图',false)}
