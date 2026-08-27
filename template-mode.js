@@ -2,9 +2,7 @@
   const KEY='festival_random_draw_template_mode';
   let mode=localStorage.getItem(KEY)||'wheel';
   const editing=new URLSearchParams(location.search).get('mode')==='edit';
-  let scene=localStorage.getItem('festival_random_draw_scene')||'general';
   const STYLE_MAP={wheel:['🎡','大转盘','转盘扇区、指针及旋转动画。'],gift:['🎁','礼盒抽奖','点击礼盒开启并展示中奖结果。'],caishen:['🤑','迎财神','随机恭请财神并展示财神降临动画。'],flipcard:['🃏','翻卡抽奖','翻开卡片后展示随机奖励。'],turncard:['🎴','翻牌抽奖','选择并翻开牌面获得奖励。'],egg:['🥚','砸金蛋','点击砸开金蛋展示奖励。'],chest:['🧰','宝箱抽奖','开启宝箱获得随机奖励。'],redpacket:['🧧','红包抽奖','点击红包获得随机奖励。']};
-  const SCENE_MAP={general:'通用活动',newbie:'新人专属',register:'注册活动',login:'登录活动',invite:'邀请活动'};
   const $=(s,r=document)=>r.querySelector(s);
   const $$=(s,r=document)=>[...r.querySelectorAll(s)];
   const isPageConfig=()=>/页面配置|页面装修/.test($('.tab.on')?.textContent||'');
@@ -16,11 +14,9 @@
 
   function optionHtml(){
     const current=STYLE_MAP[mode]||STYLE_MAP.wheel;
-    const sceneName=SCENE_MAP[scene]||SCENE_MAP.general;
-    if(editing)return `<div class="tpl-card" id="templateSelector"><div class="tpl-title"><span class="req">*</span>活动场景</div><div class="scene-options"><span class="scene-chip on">${sceneName}</span></div><div class="tpl-title" style="margin-top:16px"><span class="req">*</span>抽奖样式</div><div class="tpl-options" style="grid-template-columns:1fr"><div class="tpl-option on" style="cursor:default"><div class="tpl-icon">${current[0]}</div><div><div class="tpl-name">${current[1]}</div><div class="tpl-desc">${current[2]}</div></div><span class="tpl-tag">当前使用 · 不可修改</span></div></div><div style="margin-top:10px;color:#667085;font-size:13px">编辑活动时不可切换活动场景和抽奖样式，避免参与条件及页面素材失效。</div></div>`;
-    const scenes=Object.entries(SCENE_MAP).map(([id,name])=>`<button type="button" class="scene-chip ${scene===id?'on':''}" data-scene="${id}">${name}</button>`).join('');
+    if(editing)return `<div class="tpl-card" id="templateSelector"><div class="tpl-title"><span class="req">*</span>抽奖样式</div><div class="tpl-options" style="grid-template-columns:1fr"><div class="tpl-option on" style="cursor:default"><div class="tpl-icon">${current[0]}</div><div><div class="tpl-name">${current[1]}</div><div class="tpl-desc">${current[2]}</div></div><span class="tpl-tag">当前使用 · 不可修改</span></div></div><div style="margin-top:10px;color:#667085;font-size:13px">编辑活动时不可切换抽奖样式，避免已上传的页面素材失效。</div></div>`;
     const styles=Object.entries(STYLE_MAP).map(([id,x])=>`<div class="tpl-option ${mode===id?'on':''}" data-tpl="${id}"><div class="tpl-icon">${x[0]}</div><div><div class="tpl-name">${x[1]}</div><div class="tpl-desc">${x[2]}</div></div><span class="tpl-tag">${mode===id?'✓ 已选择':'选择'}</span></div>`).join('');
-    return `<div class="tpl-card" id="templateSelector"><div class="tpl-title"><span class="req">*</span>选择活动场景</div><div class="scene-options">${scenes}</div><div class="tpl-hint">活动场景决定默认参与条件和抽奖机会来源，可组合生成新人大转盘、注册大转盘、新人专属礼盒等活动。</div><div class="tpl-title" style="margin-top:17px"><span class="req">*</span>选择抽奖样式</div><div class="tpl-options">${styles}</div><div style="margin-top:10px;color:#667085;font-size:13px">抽奖样式仅改变前端交互和页面素材，不改变随机抽奖模板的后端逻辑。</div></div>`;
+    return `<div class="tpl-card" id="templateSelector"><div class="tpl-title"><span class="req">*</span>选择抽奖样式</div><div class="tpl-options">${styles}</div><div style="margin-top:10px;color:#667085;font-size:13px">抽奖样式仅改变前端交互和页面素材；参与会员及获取抽奖机会在后续步骤中单独配置。</div></div>`;
   }
   function uploadField(name,req=true,hint='JPG/PNG；APP/H5 与 Web 分开上传'){return `<div class="gift-field"><label>${req?'<span class="req">*</span>':''}${name}</label><div class="gift-pair"><div><div class="gift-up" data-upload>APP/H5 上传</div><div class="gift-hint">${hint}</div></div><div><div class="gift-up" data-upload>Web 上传</div><div class="gift-hint">${hint}</div></div></div></div>`}
   function giftDecorationHtml(){return `<div class="card"><div class="card-h">页面配置 · 礼盒抽奖</div><div class="card-b"><div class="gift-config">
@@ -51,7 +47,7 @@
     if(originalPageDecor) window.pageDecor=function(){return mode==='wheel'?originalPageDecor():(mode==='gift'?giftDecorationHtml():genericDecorationHtml())};
   }
   function bindGiftUploads(){if(mode==='wheel')return;$$('[data-upload]').forEach(x=>{if(x.dataset.bound)return;x.dataset.bound='1';x.onclick=()=>{x.classList.add('done');x.textContent='✓ 已上传（原型）'}})}
-  function updateHeader(){const sub=$('.sub');const style=STYLE_MAP[mode]||STYLE_MAP.wheel;if(sub)sub.textContent='随机抽奖模板 · '+(SCENE_MAP[scene]||SCENE_MAP.general)+' · 当前抽奖样式：'+style[1]}
+  function updateHeader(){const sub=$('.sub');const style=STYLE_MAP[mode]||STYLE_MAP.wheel;if(sub)sub.textContent='随机抽奖模板 · 当前抽奖样式：'+style[1]}
   function forcePageConfig(){
     if(!isPageConfig()) return;
     const body=$('#body');if(!body)return;
@@ -85,15 +81,6 @@
   function patch(){installPageDecorOverride();updateHeader();const active=$('.tab.on')?.textContent||'';if(active.includes('基础信息'))patchBasic();if(isPageConfig())forcePageConfig()}
 
   document.addEventListener('click',e=>{
-    const sceneOption=e.target.closest('#templateSelector [data-scene]');
-    if(sceneOption&&!editing){
-      e.preventDefault();e.stopPropagation();
-      scene=sceneOption.dataset.scene;
-      localStorage.setItem('festival_random_draw_scene',scene);
-      $$('#templateSelector [data-scene]').forEach(x=>x.classList.toggle('on',x.dataset.scene===scene));
-      updateHeader();
-      return;
-    }
     const option=e.target.closest('#templateSelector .tpl-option[data-tpl]');
     if(option&&!editing){
       e.preventDefault();
