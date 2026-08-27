@@ -107,6 +107,12 @@ app.onload=()=>{
           tca.src='template-center-actions.js?t='+Date.now();
           mainDoc.body.appendChild(tca);
         }
+        if(!mainDoc.getElementById('activityManagementFlowScript')){
+          const amf=mainDoc.createElement('script');
+          amf.id='activityManagementFlowScript';
+          amf.src='activity-management-flow.js?t='+Date.now();
+          mainDoc.body.appendChild(amf);
+        }
 
         const ensureGiftActivity=()=>{
           try{
@@ -135,7 +141,7 @@ app.onload=()=>{
           try{
             const ed=editorFrame.contentDocument;
             if(!ed||!ed.body)return;
-            const scripts=[['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js'],['participantScopeScript','participant-scope.js']];
+            const scripts=[['allChanceMethodsScript','all-chance-methods.js'],['prizeConfigScript','prize-config.js'],['prizeUiPatchScript','prize-ui-patch.js'],['editorLayoutPatchScript','editor-layout-patch.js'],['winnerDisplayScript','display-winner-list.js'],['templateModeScript','template-mode.js'],['participantScopeScript','participant-scope.js'],['editorSaveFlowScript','editor-save-flow.js']];
             scripts.forEach(([id,src])=>{if(!ed.getElementById(id)){const s=ed.createElement('script');s.id=id;s.src=src+'?t='+Date.now();ed.body.appendChild(s)}});
           }catch(e){console.error(e)}
         };
