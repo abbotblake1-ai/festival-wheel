@@ -80,7 +80,7 @@
       e.preventDefault();e.stopPropagation();
       scene=sceneOption.dataset.scene;
       localStorage.setItem('festival_random_draw_scene',scene);
-      $('#templateSelector [data-scene]').forEach(x=>x.classList.toggle('on',x.dataset.scene===scene));
+      $$('#templateSelector [data-scene]').forEach(x=>x.classList.toggle('on',x.dataset.scene===scene));
       updateHeader();
       return;
     }
