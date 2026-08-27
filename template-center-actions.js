@@ -85,7 +85,18 @@
     }catch(e){}
     const tip=document.createElement('div');tip.className='tc-use-tip';tip.textContent='已选择“'+name+'”模板，正在进入新增活动配置';
     document.body.appendChild(tip);setTimeout(()=>tip.remove(),1800);
-    if(typeof window.openEditor==='function')setTimeout(()=>window.openEditor(false),180);
+    setTimeout(()=>{
+      const editor=document.getElementById('editor');
+      const editorFrame=document.getElementById('editorFrame');
+      if(editor&&editorFrame){
+        editor.style.display='block';
+        editorFrame.src='wheel-editor-v5.html?mode=new&template='+encodeURIComponent(mode||'wheel')+'&t='+Date.now();
+      }else if(typeof window.openEditor==='function'){
+        window.openEditor(false);
+      }else{
+        alert('新增活动页面加载失败，请刷新后台后重试');
+      }
+    },120);
   }
 
   document.addEventListener('click',function(e){
