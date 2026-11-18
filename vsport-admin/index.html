@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>游戏场馆列表 - VSport Admin</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23304156'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="layout" id="layout">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-text">VSport Admin</span></div>
+      <nav class="menu" aria-label="主导航">
+        <button type="button" class="menu-item" data-page="home">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span class="menu-text">首页</span>
+        </button>
+        <div class="menu-group open" id="gameGroup">
+          <button type="button" class="menu-title" data-action="toggle-game" aria-expanded="true">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+            <span class="menu-text">游戏管理</span>
+            <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="submenu">
+            <button type="button" class="submenu-item active" data-page="venues">游戏场馆</button>
+          </div>
+        </div>
+        <button type="button" class="menu-item" data-page="merchants">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1.2 10H5.2L4 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 10V8a4 4 0 0 1 8 0v2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          <span class="menu-text">商户管理</span>
+        </button>
+        <button type="button" class="menu-item" data-page="finance">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M7 15h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="menu-text">财务管理</span>
+        </button>
+        <button type="button" class="menu-item" data-page="system">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M5.8 5.8l1.6 1.6M16.6 16.6l1.6 1.6M18.2 5.8l-1.6 1.6M7.4 16.6l-1.6 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="menu-text">系统管理</span>
+        </button>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="header">
+        <button type="button" class="icon-btn" data-action="collapse" aria-label="折叠菜单">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <h1 id="pageTitle">游戏场馆列表</h1>
+      </header>
+
+      <div class="content">
+        <section class="view" id="view-venues">
+          <div class="filter-card">
+            <div class="filter-row">
+              <label class="filter-item">
+                <span>场馆游戏</span>
+                <input id="qName" class="input" type="text" placeholder="请输入场馆游戏" autocomplete="off" />
+              </label>
+              <div class="filter-item">
+                <span>场馆类型</span>
+                <div class="select" id="qType" data-value="">
+                  <button type="button" class="select-trigger">
+                    <span class="select-label">全部</span>
+                    <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </button>
+                  <div class="select-menu" hidden>
+                    <button type="button" class="select-option selected" data-value="">全部</button>
+                    <button type="button" class="select-option" data-value="体育">体育</button>
+                    <button type="button" class="select-option" data-value="真人">真人</button>
+                    <button type="button" class="select-option" data-value="棋牌">棋牌</button>
+                    <button type="button" class="select-option" data-value="彩票">彩票</button>
+                    <button type="button" class="select-option" data-value="电子">电子</button>
+                    <button type="button" class="select-option" data-value="电竞">电竞</button>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-item">
+                <span>商户平台</span>
+                <div class="select" id="qMerchant" data-value="" data-empty-placeholder="1">
+                  <button type="button" class="select-trigger">
+                    <span class="select-label placeholder">请选择</span>
+                    <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </button>
+                  <div class="select-menu" id="qMerchantMenu" hidden></div>
+                </div>
+              </div>
+              <div class="filter-actions">
+                <button type="button" class="btn btn-primary" data-action="search">
+                  <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  搜索
+                </button>
+                <button type="button" class="btn" data-action="reset">
+                  <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19.5 4.5V9H15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  重置
+                </button>
+              </div>
+            </div>
+            <div class="filter-row">
+              <div class="filter-item">
+                <span>更新时间</span>
+                <div class="daterange">
+                  <svg class="cal-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5V7M16 3.5V7M4 10h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  <input id="qStart" class="date-input" type="text" placeholder="开始时间" autocomplete="off" />
+                  <span class="sep">至</span>
+                  <input id="qEnd" class="date-input" type="text" placeholder="结束时间" autocomplete="off" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="btn btn-success-plain" data-action="clear-cache">清空缓存</button>
+            <button type="button" class="btn" data-action="export">
+              <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 11l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              导出
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="grid">
+              <colgroup>
+                <col class="c-idx" />
+                <col class="c-name" />
+                <col class="c-app" />
+                <col class="c-type" />
+                <col class="c-code" />
+                <col class="c-merchant" />
+                <col class="c-user" />
+                <col class="c-remark" />
+                <col class="c-time" />
+                <col class="c-ops" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="center">序号</th>
+                  <th>场馆游戏</th>
+                  <th>所属应用</th>
+                  <th>场馆类型</th>
+                  <th>场馆编码</th>
+                  <th>商户平台</th>
+                  <th>更新创建人</th>
+                  <th>备注</th>
+                  <th>最后操作时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="venueTbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view" id="view-home" hidden>
+          <div class="placeholder-card">
+            <h2>首页</h2>
+            <p>欢迎使用 VSport Admin</p>
+          </div>
+        </section>
+        <section class="view" id="view-merchants" hidden>
+          <div class="placeholder-card">
+            <h2>商户管理</h2>
+            <p>功能建设中</p>
+          </div>
+        </section>
+        <section class="view" id="view-finance" hidden>
+          <div class="placeholder-card">
+            <h2>财务管理</h2>
+            <p>功能建设中</p>
+          </div>
+        </section>
+        <section class="view" id="view-system" hidden>
+          <div class="placeholder-card">
+            <h2>系统管理</h2>
+            <p>功能建设中</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div id="modalRoot"></div>
+  <div id="calendar" class="calendar" hidden></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+wrangler.toml
+.gitignore
+.assetsignore
+.dev.vars
+.env
+.env.*
