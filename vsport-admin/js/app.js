@@ -551,7 +551,6 @@ function keyConfigCard(item) {
     <div class="key-group" data-group="ops">
       <div class="key-group-head">
         <span>运营自定义配置</span>
-        <span class="pill pill-edit">可编辑</span>
       </div>
       <div id="opsKeyList">${opsRows}</div>
     </div>
@@ -559,10 +558,8 @@ function keyConfigCard(item) {
     <div class="key-group" data-group="third">
       <div class="key-group-head">
         <span>三方系统配置</span>
-        <span class="pill pill-readonly">只读</span>
       </div>
       <div id="thirdKeyList">${thirdRows}</div>
-      <p class="key-caption">三方配置由技术统一维护，运营无需操作。</p>
     </div>
   </section>`;
 }

@@ -502,17 +502,6 @@ textarea.input {
   color: #606266;
   font-size: 13px;
 }
-.pill {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: 11px;
-  font-size: 12px;
-  line-height: 22px;
-}
-.pill-edit { background: #f0f9eb; color: #67c23a; }
-.pill-readonly { background: #f4f4f5; color: #909399; }
 .key-name-row {
   display: flex;
   align-items: center;
@@ -537,7 +526,6 @@ textarea.input {
 .key-name-row .key-name-input::placeholder { color: var(--placeholder); }
 .key-system { flex: none; color: #c0c4cc; font-size: 13px; }
 .key-divider { height: 1px; margin: 6px 0 14px; background: #ebeef5; }
-.key-caption { margin: 2px 0 0; color: #909399; font-size: 12px; line-height: 1.5; }
 .radios { display: flex; flex-wrap: wrap; gap: 8px 4px; min-height: 36px; align-items: center; }
 .radio {
   display: inline-flex;
