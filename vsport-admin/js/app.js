@@ -35,16 +35,21 @@ function merchant(id, name, updatedAt, url, blankOrder) {
 }
 
 function venue(partial) {
-  return Object.assign({
+  const item = Object.assign({
     app: "BTY",
     status: "启用",
     creator: "admin",
     remark: "-",
     urlNames: ["testApi"],
-    keyNames: ["merchantId"],
+    opsKeyNames: ["merchantId"],
+    thirdPartyKeyNames: [],
     sampleUrls: { testApi: GENERIC_URL },
     merchants: [],
   }, partial);
+  if (!item.opsKeyNames.length) item.opsKeyNames = ["merchantId"];
+  if (!item.thirdPartyKeyNames) item.thirdPartyKeyNames = [];
+  item.keyNames = item.opsKeyNames.concat(item.thirdPartyKeyNames);
+  return item;
 }
 
 const venues = [
@@ -55,6 +60,8 @@ const venues = [
     code: "TEST_HORSE_01",
     remark: "测试数据-可删除",
     updatedAt: "2026-11-18 14:38:06",
+    opsKeyNames: ["merchantId", "customKey"],
+    thirdPartyKeyNames: ["thirdPartyKey"],
     sampleUrls: { testApi: HORSE_URL },
     merchants: [
       merchant("m1", "ceshi bianji", "", HORSE_URL, 3),
@@ -517,16 +524,52 @@ function openEditMerchant(id) {
   document.getElementById("modalRoot").insertAdjacentHTML("beforeend", html.replace("data-action=\"confirm-edit-merchant\"", `data-action="confirm-edit-merchant" data-id="${esc(row.id)}"`));
 }
 
+function opsKeyRow(name, isFirst) {
+  const field = name
+    ? `<input class="key-name-input" data-group="ops" readonly value="${esc(name)}" />`
+    : '<input class="key-name-input" data-group="ops" placeholder="请输入 Key 名称" autocomplete="off" />';
+  const action = isFirst
+    ? '<button type="button" class="text-link" data-action="add-key">添加</button>'
+    : '<button type="button" class="text-link danger" data-action="delete-ops-key">删除</button>';
+  return `<div class="key-name-row" data-group="ops">${field}${action}</div>`;
+}
+
+function thirdKeyRow(name) {
+  return `<div class="key-name-row" data-group="third">
+    <input class="key-name-input" data-group="third" readonly value="${esc(name)}" />
+    <span class="key-system">由系统维护</span>
+  </div>`;
+}
+
+function keyConfigCard(item) {
+  const opsRows = (item.opsKeyNames.length ? item.opsKeyNames : [""])
+    .map((name, index) => opsKeyRow(name, index === 0))
+    .join("");
+  const thirdRows = item.thirdPartyKeyNames.map((name) => thirdKeyRow(name)).join("");
+  return `<section class="key-config-card">
+    <h3 class="key-config-title">Key配置名称</h3>
+    <div class="key-group" data-group="ops">
+      <div class="key-group-head">
+        <span>运营自定义配置</span>
+        <span class="pill pill-edit">可编辑</span>
+      </div>
+      <div id="opsKeyList">${opsRows}</div>
+    </div>
+    <div class="key-divider"></div>
+    <div class="key-group" data-group="third">
+      <div class="key-group-head">
+        <span>三方系统配置</span>
+        <span class="pill pill-readonly">只读</span>
+      </div>
+      <div id="thirdKeyList">${thirdRows}</div>
+      <p class="key-caption">三方配置由技术统一维护，运营无需操作。</p>
+    </div>
+  </section>`;
+}
+
 function openEditVenue(id) {
   const item = getVenue(id);
   if (!item) return;
-  const keyRows = item.keyNames.map((name, index) => `<div class="form-row">
-    <label>${index === 0 ? "Key配置名称:" : ""}</label>
-    <div class="field${index === 0 ? " with-link" : ""}">
-      <input class="input key-name-input" readonly value="${esc(name)}" />
-      ${index === 0 ? '<button type="button" class="text-link" data-action="add-key">添加</button>' : ""}
-    </div>
-  </div>`).join("");
   const urlRows = item.urlNames.map((name, index) => `<div class="form-row">
     <label>${index === 0 ? "URL配置名称:" : ""}</label>
     <div class="field"><input class="input" readonly value="${esc(name)}" /></div>
@@ -553,7 +596,7 @@ function openEditVenue(id) {
       <div class="field"><input class="input" readonly value="${esc(item.code)}" /></div>
     </div>
     ${urlRows}
-    <div id="keyNameList">${keyRows}</div>
+    ${keyConfigCard(item)}
     <div class="form-row top">
       <label>备注:</label>
       <div class="field"><textarea class="input" id="draftRemark">${esc(item.remark)}</textarea></div>
@@ -666,13 +709,21 @@ function confirmDelete() {
 }
 
 function addKeyRow() {
-  const list = document.getElementById("keyNameList");
+  const list = document.getElementById("opsKeyList");
   if (!list) return;
   const row = document.createElement("div");
-  row.className = "form-row";
-  row.innerHTML = `<label></label><div class="field"><input class="input key-name-input" placeholder="请输入 Key 名称" autocomplete="off" /></div>`;
+  row.className = "key-name-row";
+  row.dataset.group = "ops";
+  row.innerHTML = `<input class="key-name-input" data-group="ops" placeholder="请输入 Key 名称" autocomplete="off" />
+    <button type="button" class="text-link danger" data-action="delete-ops-key">删除</button>`;
   list.appendChild(row);
   row.querySelector("input").focus();
+}
+
+function deleteOpsKey(el) {
+  const row = el.closest(".key-name-row");
+  if (!row || row.dataset.group !== "ops") return;
+  row.remove();
 }
 
 function confirmEditVenue(id) {
@@ -687,19 +738,24 @@ function confirmEditVenue(id) {
     return;
   }
   const names = [];
-  layer.querySelectorAll(".key-name-input").forEach((input) => {
+  layer.querySelectorAll('.key-name-input[data-group="ops"]').forEach((input) => {
     const value = input.value.trim();
     if (value && !names.includes(value)) names.push(value);
   });
   if (!names.length) {
-    showToast("请至少保留一个 Key 配置名称", "warning");
+    showToast("请至少保留一个运营 Key 配置名称", "warning");
+    return;
+  }
+  if (names.some((name) => item.thirdPartyKeyNames.includes(name))) {
+    showToast("运营配置不能使用三方系统的 Key 名称", "warning");
     return;
   }
   item.type = type.value;
   item.app = app.dataset.value;
   item.status = status.value;
   item.remark = document.getElementById("draftRemark").value;
-  item.keyNames = names;
+  item.opsKeyNames = names;
+  item.keyNames = item.opsKeyNames.concat(item.thirdPartyKeyNames);
   item.updatedAt = formatNow();
   closeTop();
   applyFilters();
@@ -771,6 +827,7 @@ function onAction(el) {
   else if (action === "confirm-edit-merchant") confirmEditMerchant(el.dataset.id);
   else if (action === "confirm-edit-venue") confirmEditVenue(el.dataset.id);
   else if (action === "add-key") addKeyRow();
+  else if (action === "delete-ops-key") deleteOpsKey(el);
 }
 
 document.addEventListener("click", (event) => {

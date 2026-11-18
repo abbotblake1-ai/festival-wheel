@@ -434,6 +434,65 @@ textarea.input {
   flex: none;
 }
 .text-link:hover { color: var(--primary-hover); }
+.text-link.danger { color: #f56c6c; }
+.text-link.danger:hover { color: #f78989; }
+.key-config-card {
+  border: 1px solid #ebeef5;
+  border-radius: 8px;
+  padding: 16px 16px 14px;
+  margin: 2px 0 18px;
+  background: #fff;
+}
+.key-config-title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--text);
+}
+.key-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #606266;
+  font-size: 13px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 11px;
+  font-size: 12px;
+  line-height: 22px;
+}
+.pill-edit { background: #f0f9eb; color: #67c23a; }
+.pill-readonly { background: #f4f4f5; color: #909399; }
+.key-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  margin-bottom: 10px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #f5f7fa;
+}
+.key-name-row .key-name-input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #606266;
+  padding: 0;
+}
+.key-name-row .key-name-input[readonly] { cursor: default; }
+.key-name-row .key-name-input::placeholder { color: var(--placeholder); }
+.key-system { flex: none; color: #c0c4cc; font-size: 13px; }
+.key-divider { height: 1px; margin: 6px 0 14px; background: #ebeef5; }
+.key-caption { margin: 2px 0 0; color: #909399; font-size: 12px; line-height: 1.5; }
 .radios { display: flex; flex-wrap: wrap; gap: 8px 4px; min-height: 36px; align-items: center; }
 .radio {
   display: inline-flex;
