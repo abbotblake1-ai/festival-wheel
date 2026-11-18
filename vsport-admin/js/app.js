@@ -457,7 +457,7 @@ function openConfig(id) {
   configVenueId = id;
   const urlRows = venue.urlNames.map((name) => `<div class="kv-row">
     <label>${esc(name)}:</label>
-    <input class="input new-url" data-name="${esc(name)}" value="${esc(venue.sampleUrls[name] || "")}" autocomplete="off" />
+    <input class="input new-url" data-name="${esc(name)}" value="${esc(venue.sampleUrls[name] || "")}" autocomplete="off" disabled />
   </div>`).join("");
   const keyRows = venue.keyNames.map((name) => `<div class="kv-row">
     <label>${esc(name)}:</label>
@@ -502,7 +502,7 @@ function openEditMerchant(id) {
   if (!row) return;
   const urlRows = venue.urlNames.map((name) => `<div class="kv-row">
     <label>${esc(name)}:</label>
-    <input class="input edit-url" data-name="${esc(name)}" value="${esc(row.urls[name] || "")}" autocomplete="off" />
+    <input class="input edit-url" data-name="${esc(name)}" value="${esc(row.urls[name] || "")}" autocomplete="off" disabled />
   </div>`).join("");
   const keyRows = venue.keyNames.map((name) => {
     const masked = row.keys[name] ? "******" : "";
@@ -572,7 +572,7 @@ function openEditVenue(id) {
   if (!item) return;
   const urlRows = item.urlNames.map((name, index) => `<div class="form-row">
     <label>${index === 0 ? "URL配置名称:" : ""}</label>
-    <div class="field"><input class="input" readonly value="${esc(name)}" /></div>
+    <div class="field"><input class="input" value="${esc(name)}" disabled /></div>
   </div>`).join("");
   const body = `
     <div class="form-row">

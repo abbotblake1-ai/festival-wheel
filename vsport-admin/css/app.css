@@ -149,6 +149,14 @@ h1, h2, h3, p { margin: 0; }
 .input:focus, .select.open .select-trigger, .daterange:focus-within { border-color: var(--primary); }
 .input::placeholder, .date-input::placeholder { color: var(--placeholder); }
 .input[readonly] { background: var(--fill); color: var(--regular); cursor: default; }
+.input:disabled {
+  background: #f5f7fa;
+  border-color: #e4e7ed;
+  color: #a8abb2;
+  -webkit-text-fill-color: #a8abb2;
+  cursor: not-allowed;
+  opacity: 1;
+}
 textarea.input {
   width: 100%;
   height: auto;
