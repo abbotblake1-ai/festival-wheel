@@ -550,14 +550,14 @@ function keyConfigCard(item) {
     <h3 class="key-config-title">Key配置名称</h3>
     <div class="key-group" data-group="third">
       <div class="key-group-head">
-        <span>三方系统配置</span>
+        <span>三方KEY</span>
       </div>
       <div id="thirdKeyList">${thirdRows}</div>
     </div>
     <div class="key-divider"></div>
     <div class="key-group" data-group="ops">
       <div class="key-group-head">
-        <span>运营自定义配置</span>
+        <span>自定义KEY</span>
       </div>
       <div id="opsKeyList">${opsRows}</div>
     </div>
