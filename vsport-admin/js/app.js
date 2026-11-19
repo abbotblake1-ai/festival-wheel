@@ -548,18 +548,18 @@ function keyConfigCard(item) {
   const thirdRows = item.thirdPartyKeyNames.map((name) => thirdKeyRow(name)).join("");
   return `<section class="key-config-card">
     <h3 class="key-config-title">Key配置名称</h3>
-    <div class="key-group" data-group="ops">
-      <div class="key-group-head">
-        <span>运营自定义配置</span>
-      </div>
-      <div id="opsKeyList">${opsRows}</div>
-    </div>
-    <div class="key-divider"></div>
     <div class="key-group" data-group="third">
       <div class="key-group-head">
         <span>三方系统配置</span>
       </div>
       <div id="thirdKeyList">${thirdRows}</div>
+    </div>
+    <div class="key-divider"></div>
+    <div class="key-group" data-group="ops">
+      <div class="key-group-head">
+        <span>运营自定义配置</span>
+      </div>
+      <div id="opsKeyList">${opsRows}</div>
     </div>
   </section>`;
 }
