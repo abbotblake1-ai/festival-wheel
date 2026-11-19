@@ -41,12 +41,12 @@ function venue(partial) {
     creator: "admin",
     remark: "-",
     urlNames: ["testApi"],
-    opsKeyNames: ["merchantId"],
+    opsKeyNames: [],
     thirdPartyKeyNames: [],
     sampleUrls: { testApi: GENERIC_URL },
     merchants: [],
   }, partial);
-  if (!item.opsKeyNames.length) item.opsKeyNames = ["merchantId"];
+  if (!item.opsKeyNames) item.opsKeyNames = [];
   if (!item.thirdPartyKeyNames) item.thirdPartyKeyNames = [];
   item.keyNames = item.opsKeyNames.concat(item.thirdPartyKeyNames);
   return item;
@@ -60,7 +60,7 @@ const venues = [
     code: "TEST_HORSE_01",
     remark: "测试数据-可删除",
     updatedAt: "2026-11-18 14:38:06",
-    opsKeyNames: ["merchantId", "customKey"],
+    opsKeyNames: [],
     thirdPartyKeyNames: ["thirdPartyKey"],
     sampleUrls: { testApi: HORSE_URL },
     merchants: [
@@ -527,7 +527,7 @@ function openEditMerchant(id) {
 function opsKeyRow(name, isFirst) {
   const field = name
     ? `<input class="key-name-input" data-group="ops" readonly value="${esc(name)}" />`
-    : '<input class="key-name-input" data-group="ops" placeholder="请输入 Key 名称" autocomplete="off" />';
+    : '<input class="key-name-input" data-group="ops" placeholder="请输入key的名称" autocomplete="off" />';
   const action = isFirst
     ? '<button type="button" class="text-link" data-action="add-key">添加</button>'
     : '<button type="button" class="text-link danger" data-action="delete-ops-key">删除</button>';
@@ -711,7 +711,7 @@ function addKeyRow() {
   const row = document.createElement("div");
   row.className = "key-name-row";
   row.dataset.group = "ops";
-  row.innerHTML = `<input class="key-name-input" data-group="ops" placeholder="请输入 Key 名称" autocomplete="off" />
+  row.innerHTML = `<input class="key-name-input" data-group="ops" placeholder="请输入key的名称" autocomplete="off" />
     <button type="button" class="text-link danger" data-action="delete-ops-key">删除</button>`;
   list.appendChild(row);
   row.querySelector("input").focus();
@@ -739,10 +739,6 @@ function confirmEditVenue(id) {
     const value = input.value.trim();
     if (value && !names.includes(value)) names.push(value);
   });
-  if (!names.length) {
-    showToast("请至少保留一个运营 Key 配置名称", "warning");
-    return;
-  }
   if (names.some((name) => item.thirdPartyKeyNames.includes(name))) {
     showToast("运营配置不能使用三方系统的 Key 名称", "warning");
     return;
