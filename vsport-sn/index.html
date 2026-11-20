@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SN号管理 - VSport Admin</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23304156'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><span class="logo-text">VSport Admin</span></div>
+      <nav class="menu" aria-label="主导航">
+        <div class="menu-group open" id="systemGroup">
+          <button type="button" class="menu-title" data-action="toggle-system" aria-expanded="true">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M5.8 5.8l1.6 1.6M16.6 16.6l1.6 1.6M18.2 5.8l-1.6 1.6M7.4 16.6l-1.6 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span class="menu-text">系统管理</span>
+            <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="submenu">
+            <button type="button" class="submenu-item" data-page="users">用户管理</button>
+            <button type="button" class="submenu-item" data-page="roles">角色管理</button>
+            <button type="button" class="submenu-item" data-page="menus">菜单管理</button>
+            <button type="button" class="submenu-item" data-page="depts">部门管理</button>
+            <button type="button" class="submenu-item" data-page="posts">岗位管理</button>
+            <button type="button" class="submenu-item" data-page="dicts">字典管理</button>
+            <button type="button" class="submenu-item" data-page="params">参数设置</button>
+            <button type="button" class="submenu-item" data-page="logs">日志管理</button>
+            <button type="button" class="submenu-item" data-page="mustread">必读管理</button>
+            <button type="button" class="submenu-item active" data-page="sn">SN号管理</button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+    <div class="main">
+      <header class="header">
+        <div class="header-row">
+          <nav class="crumb" id="crumb">系统管理 / <b>SN号管理</b></nav>
+          <h1 id="pageTitle" class="sr-only">SN号管理</h1>
+        </div>
+      </header>
+      <div class="content">
+        <section class="view" id="view-sn">
+          <div class="filter-card">
+            <div class="filter-row">
+              <label class="filter-item">
+                <span>SN号</span>
+                <input id="snQuery" class="input" type="text" placeholder="SN号不能为空" autocomplete="off" />
+              </label>
+              <div class="filter-item">
+                <span>状态</span>
+                <div class="select" id="snStatus" data-value="" data-empty-placeholder="1">
+                  <button type="button" class="select-trigger">
+                    <span class="select-label placeholder">状态</span>
+                    <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                  </button>
+                  <div class="select-menu" hidden>
+                    <button type="button" class="select-option selected" data-value="">状态</button>
+                    <button type="button" class="select-option" data-value="正常">正常</button>
+                    <button type="button" class="select-option" data-value="停用">停用</button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" data-action="sn-search">搜索</button>
+              <button type="button" class="btn" data-action="sn-reset">重置</button>
+            </div>
+          </div>
+          <div class="toolbar left">
+            <button type="button" class="btn btn-plain-primary" data-action="sn-add">新增</button>
+            <button type="button" class="btn btn-plain-danger" data-action="sn-delete-selected">删除</button>
+          </div>
+          <div class="table-wrap">
+            <table class="grid sn-grid">
+              <thead>
+                <tr>
+                  <th class="center"><input id="snCheckAll" type="checkbox" aria-label="全选" /></th>
+                  <th>SN号</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                  <th>更新时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="snTbody"></tbody>
+            </table>
+          </div>
+          <div class="pager" id="snPager"></div>
+        </section>
+        <section class="view" id="view-placeholder" hidden>
+          <div class="placeholder-card">
+            <h2 id="placeholderTitle">系统管理</h2>
+            <p>功能建设中</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div id="modalRoot"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
