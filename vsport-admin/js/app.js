@@ -526,18 +526,21 @@ function openEditMerchant(id) {
 
 function opsKeyRow(name, isFirst) {
   const field = name
-    ? `<input class="key-name-input" data-group="ops" readonly value="${esc(name)}" />`
-    : '<input class="key-name-input" data-group="ops" placeholder="请输入key的名称" autocomplete="off" />';
+    ? `<input class="input key-name-input" data-group="ops" readonly value="${esc(name)}" />`
+    : '<input class="input key-name-input" data-group="ops" placeholder="请输入key的名称" autocomplete="off" />';
   const action = isFirst
     ? '<button type="button" class="text-link" data-action="add-key">添加</button>'
     : '<button type="button" class="text-link danger" data-action="delete-ops-key">删除</button>';
-  return `<div class="key-name-row" data-group="ops">${field}${action}</div>`;
+  return `<div class="form-row key-name-row" data-group="ops"><label>${isFirst ? "自定义KEY" : ""}</label><div class="field with-link">${field}${action}</div></div>`;
 }
 
-function thirdKeyRow(name) {
-  return `<div class="key-name-row" data-group="third">
-    <input class="key-name-input" data-group="third" readonly value="${esc(name)}" />
-    <span class="key-system">由系统维护</span>
+function thirdKeyRow(name, isFirst) {
+  return `<div class="form-row key-name-row" data-group="third">
+    <label>${isFirst ? "三方KEY" : ""}</label>
+    <div class="field with-link">
+      <input class="input key-name-input" data-group="third" readonly value="${esc(name)}" />
+      <span class="key-system">由系统维护</span>
+    </div>
   </div>`;
 }
 
@@ -545,23 +548,17 @@ function keyConfigCard(item) {
   const opsRows = (item.opsKeyNames.length ? item.opsKeyNames : [""])
     .map((name, index) => opsKeyRow(name, index === 0))
     .join("");
-  const thirdRows = item.thirdPartyKeyNames.map((name) => thirdKeyRow(name)).join("");
-  return `<section class="key-config-card">
-    <h3 class="key-config-title">Key配置名称</h3>
+  const thirdRows = item.thirdPartyKeyNames.length
+    ? item.thirdPartyKeyNames.map((name, index) => thirdKeyRow(name, index === 0)).join("")
+    : '<div class="form-row" data-group="third"><label>三方KEY</label><div class="field"></div></div>';
+  return `<div class="key-config">
     <div class="key-group" data-group="third">
-      <div class="key-group-head">
-        <span>三方KEY</span>
-      </div>
       <div id="thirdKeyList">${thirdRows}</div>
     </div>
-    <div class="key-divider"></div>
     <div class="key-group" data-group="ops">
-      <div class="key-group-head">
-        <span>自定义KEY</span>
-      </div>
       <div id="opsKeyList">${opsRows}</div>
     </div>
-  </section>`;
+  </div>`;
 }
 
 function openEditVenue(id) {
@@ -709,10 +706,10 @@ function addKeyRow() {
   const list = document.getElementById("opsKeyList");
   if (!list) return;
   const row = document.createElement("div");
-  row.className = "key-name-row";
+  row.className = "form-row key-name-row";
   row.dataset.group = "ops";
-  row.innerHTML = `<input class="key-name-input" data-group="ops" placeholder="请输入key的名称" autocomplete="off" />
-    <button type="button" class="text-link danger" data-action="delete-ops-key">删除</button>`;
+  row.innerHTML = `<label></label><div class="field with-link"><input class="input key-name-input" data-group="ops" placeholder="请输入key的名称" autocomplete="off" />
+    <button type="button" class="text-link danger" data-action="delete-ops-key">删除</button></div>`;
   list.appendChild(row);
   row.querySelector("input").focus();
 }

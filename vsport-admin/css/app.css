@@ -481,51 +481,7 @@ textarea.input {
 .text-link:hover { color: var(--primary-hover); }
 .text-link.danger { color: #f56c6c; }
 .text-link.danger:hover { color: #f78989; }
-.key-config-card {
-  border: 1px solid #e6e8eb;
-  border-radius: 8px;
-  padding: 14px 14px 12px;
-  margin: 4px 0 14px;
-  background: #fff;
-}
-.key-config-title {
-  margin: 0 0 12px;
-  font-size: 14px;
-  font-weight: 650;
-  color: var(--text);
-}
-.key-group-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  color: #606266;
-  font-size: 13px;
-}
-.key-name-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 40px;
-  margin-bottom: 10px;
-  padding: 0 14px;
-  border-radius: 8px;
-  background: #f5f7fa;
-}
-.key-name-row .key-name-input {
-  flex: 1;
-  min-width: 0;
-  height: 40px;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: #606266;
-  padding: 0;
-}
-.key-name-row .key-name-input[readonly] { cursor: default; }
-.key-name-row .key-name-input::placeholder { color: var(--placeholder); }
-.key-system { flex: none; color: #c0c4cc; font-size: 13px; }
-.key-divider { height: 1px; margin: 6px 0 14px; background: #ebeef5; }
+.key-system { flex: none; color: #a8abb2; font-size: 13px; white-space: nowrap; }
 .radios { display: flex; flex-wrap: wrap; gap: 8px 4px; min-height: 36px; align-items: center; }
 .radio {
   display: inline-flex;
