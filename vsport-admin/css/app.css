@@ -272,6 +272,7 @@ textarea.input {
 .btn-icon { width: 14px; height: 14px; flex: none; }
 
 .toolbar { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 10px; }
+.toolbar.left { justify-content: flex-start; gap: 10px; }
 
 .table-wrap {
   width: 100%;
@@ -577,5 +578,95 @@ textarea.input {
 }
 .cal-day:hover { color: var(--primary); }
 .cal-day.out { color: #c0c4cc; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.header { height: auto; flex-direction: column; align-items: stretch; padding: 0; gap: 0; }
+.header-row { height: var(--header-h); display: flex; align-items: center; gap: 4px; padding: 0 12px; }
+.crumb { color: var(--secondary); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crumb b { color: var(--text); font-weight: 600; }
+.header-tools { margin-left: auto; display: flex; align-items: center; gap: 2px; color: var(--regular); }
+.tool-text { font-size: 13px; padding: 0 8px; color: var(--regular); }
+.tool-lang {
+  width: 22px;
+  height: 22px;
+  margin: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--regular);
+}
+.tabbar { display: flex; align-items: flex-end; gap: 6px; padding: 0 12px; min-height: 36px; border-top: 1px solid #f2f3f5; }
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  background: transparent;
+  color: var(--regular);
+  font-size: 13px;
+}
+.tab.active { background: #fff; border-color: #e6e8eb; color: var(--primary); }
+.tab-x { color: var(--secondary); font-size: 14px; line-height: 1; }
+.tab.active .tab-x:hover { color: var(--danger); }
+.btn-plain-primary { color: var(--primary); border-color: #b3d8ff; background: #ecf5ff; }
+.btn-plain-primary:hover { color: #fff; background: var(--primary); border-color: var(--primary); }
+.btn-plain-danger { color: var(--danger); border-color: #fbc4c4; background: #fef0f0; }
+.btn-plain-danger:hover { color: #fff; background: var(--danger); border-color: var(--danger); }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #67c23a;
+  background: #f0f9eb;
+  border: 1px solid #e1f3d8;
+}
+.tag.off { color: #909399; background: #f4f4f5; border-color: #e9e9eb; }
+.ops { display: flex; flex-wrap: wrap; gap: 6px; }
+.op-btn { height: 24px; padding: 0 8px; border: 0; border-radius: 3px; color: #fff; font-size: 12px; }
+.op-orange { background: #e6a23c; }
+.op-blue { background: #409eff; }
+.op-green { background: #67c23a; }
+.op-btn:hover { filter: brightness(1.05); }
+.linkish { border: 0; background: transparent; color: var(--primary); padding: 0 4px; }
+.linkish.danger { color: var(--danger); }
+.pager { display: flex; justify-content: flex-end; align-items: center; gap: 8px; padding: 12px 2px 0; color: var(--regular); font-size: 13px; }
+.pager button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--regular);
+}
+.pager button.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+.pager button:disabled { color: #c0c4cc; cursor: not-allowed; }
+.dialog.narrow { width: 560px; }
+.dialog.small { width: 440px; }
+.field-error { margin: 4px 0 0; color: #f56c6c; font-size: 12px; line-height: 1.4; }
+.pass-wrap { position: relative; }
+.pass-wrap .input { width: 100%; padding-right: 36px; }
+.pass-toggle { position: absolute; right: 8px; top: 0; height: 32px; border: 0; background: transparent; color: var(--secondary); }
+.sn-grid th:first-child, .user-grid th:first-child, .sn-grid td:first-child, .user-grid td:first-child { width: 46px; text-align: center; }
+.user-grid .ops { min-width: 420px; }
 .cal-day.on { background: var(--primary); color: #fff; }
 .cal-day.on:hover { color: #fff; }
