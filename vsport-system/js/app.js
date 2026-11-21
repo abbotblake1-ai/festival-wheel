@@ -39,6 +39,8 @@ const userRows = [
   validity: "永久",
   status: "正常",
   sn: "",
+  shield: "",
+  shieldSn: "",
   password: "",
 }));
 
@@ -201,8 +203,12 @@ function userForm(row) {
     ? `<input class="input" value="${esc(row.name)}" readonly />`
     : `<input id="userName" class="input" autocomplete="off" /><p class="field-error" id="userNameError" hidden>用户名称长度必须介于 6 和 20 之间</p>`;
   const password = editing ? "" : `<div class="form-row"><label><span class="req">*</span>用户密码</label><div class="field"><div class="pass-wrap"><input id="userPassword" class="input" type="password" autocomplete="new-password" /><button type="button" class="pass-toggle" data-action="toggle-password" aria-label="显示密码">显示</button></div><p class="field-error" id="userPasswordError" hidden>用户密码长度必须介于 12 和 20 之间</p></div></div>`;
+  const shield = editing ? row.shield : "";
+  const shieldSn = editing ? row.shieldSn : "";
   return `<div class="form-row"><label><span class="req">*</span>用户名称</label><div class="field">${name}</div></div>
     ${password}
+    <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token令牌"], shield)}</div></div>
+    <div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>角色</label><div class="field">${choiceSelect("draftRole", editing ? row.role : "", ROLES, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>归属部门</label><div class="field">${choiceSelect("draftDept", editing ? row.dept : "", DEPTS, "请选择归属部门")}</div></div>
     <div class="form-row"><label>动态密码卡SN号</label><div class="field"><input id="draftUserSn" class="input" placeholder="请输入" value="${esc(editing ? row.sn : "")}" autocomplete="off" /></div></div>
@@ -239,6 +245,12 @@ function openBind(id) {
   </div></div>`);
 }
 
+function userShieldFields() {
+  const picked = document.querySelector('input[name="userShield"]:checked');
+  const shieldSn = document.getElementById("userShieldSn").value.trim();
+  return { shield: picked ? picked.value : "", shieldSn };
+}
+
 function confirmUserAdd() {
   const name = document.getElementById("userName").value.trim();
   const password = document.getElementById("userPassword").value;
@@ -247,12 +259,13 @@ function confirmUserAdd() {
   document.getElementById("userNameError").hidden = nameOk;
   document.getElementById("userPasswordError").hidden = passwordOk;
   if (!nameOk || !passwordOk) return;
+  const { shield, shieldSn } = userShieldFields();
   const role = readChoice("draftRole");
   const dept = readChoice("draftDept");
   const post = readChoice("draftPost");
   const perm = readChoice("draftPerm");
   const validity = document.querySelector('input[name="draftValidity"]:checked');
-  if (!role || !dept || !post || !perm || !validity) {
+  if (!shield || !shieldSn || !role || !dept || !post || !perm || !validity) {
     showToast("请完整填写必填项", "warning");
     return;
   }
@@ -271,6 +284,8 @@ function confirmUserAdd() {
     validity: validity.value,
     status: "正常",
     sn: document.getElementById("draftUserSn").value.trim(),
+    shield,
+    shieldSn,
     password,
   });
   closeTop();
@@ -285,7 +300,8 @@ function confirmUserEdit(id) {
   const post = readChoice("draftPost");
   const perm = readChoice("draftPerm");
   const validity = document.querySelector('input[name="draftValidity"]:checked');
-  if (!row || !role || !dept || !post || !perm || !validity) {
+  const { shield, shieldSn } = userShieldFields();
+  if (!row || !shield || !shieldSn || !role || !dept || !post || !perm || !validity) {
     showToast("请完整填写必填项", "warning");
     return;
   }
@@ -295,6 +311,8 @@ function confirmUserEdit(id) {
   row.perm = perm;
   row.validity = validity.value;
   row.sn = document.getElementById("draftUserSn").value.trim();
+  row.shield = shield;
+  row.shieldSn = shieldSn;
   closeTop();
   applyUserFilters();
   showToast("保存成功", "success");
