@@ -327,6 +327,7 @@ const snRows = [
 ].map(([sn, createdAt, updatedAt], index) => ({
   id: "sn" + (index + 1),
   sn,
+  shield: index % 2 === 0 ? "海月盾" : "Token令牌",
   status: "正常",
   createdAt,
   updatedAt,
@@ -338,6 +339,7 @@ for (let i = 0; i < 35; i += 1) {
   snRows.push({
     id: "snx" + i,
     sn: String(799996567 - i),
+    shield: i % 2 === 0 ? "Token令牌" : "海月盾",
     status: "正常",
     createdAt: "2024-08-23 15:20:00",
     updatedAt: "2024-08-23 15:20:00",
@@ -365,11 +367,12 @@ function renderSn() {
   document.getElementById("snTbody").innerHTML = rows.map((row) => `<tr>
     <td class="center"><input type="checkbox" data-sn-id="${esc(row.id)}" ${snSelection.has(row.id) ? "checked" : ""} aria-label="选择 ${esc(row.sn)}" /></td>
     <td>${esc(row.sn)}</td>
+    <td>${esc(row.shield || "海月盾")}</td>
     <td>${statusTag(row.status)}</td>
     <td>${esc(row.createdAt)}</td>
     <td>${esc(row.updatedAt)}</td>
     <td><button type="button" class="linkish" data-action="sn-edit" data-id="${esc(row.id)}">修改</button><button type="button" class="linkish danger" data-action="sn-delete" data-id="${esc(row.id)}">删除</button></td>
-  </tr>`).join("") || '<tr><td class="empty" colspan="6">暂无数据</td></tr>';
+  </tr>`).join("") || '<tr><td class="empty" colspan="7">暂无数据</td></tr>';
   document.getElementById("snCheckAll").checked = rows.length > 0 && rows.every((row) => snSelection.has(row.id));
   renderPager(snFiltered.length, snPage);
 }
@@ -382,10 +385,16 @@ function applySnFilters() {
   renderSn();
 }
 
+function shieldValue() {
+  const picked = document.querySelector('input[name="snShield"]:checked');
+  return picked ? picked.value : "海月盾";
+}
+
 function openSnAdd() {
   const body = `<div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>密码因子</label><div class="field"><input id="snFactor" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" autocomplete="off" /></div></div>
+    <div class="form-row"><label>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token令牌"], "海月盾")}</div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], "正常")}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="新增SN号">
     <div class="dialog-header"><h2>新增SN号</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
@@ -399,6 +408,7 @@ function openSnEdit(id) {
   if (!row) return;
   const body = `<div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="snNumber" class="input" value="${esc(row.sn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" value="" autocomplete="off" /></div></div>
+    <div class="form-row"><label>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token令牌"], row.shield || "海月盾")}</div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], row.status)}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="修改SN号">
     <div class="dialog-header"><h2>修改SN号</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
@@ -435,7 +445,7 @@ function confirmSnAdd() {
     showToast("该SN号已存在", "warning");
     return;
   }
-  snRows.unshift({ id: "sn" + Date.now(), sn, status: status.value, createdAt: formatNow(), updatedAt: formatNow(), factor, otp });
+  snRows.unshift({ id: "sn" + Date.now(), sn, shield: shieldValue(), status: status.value, createdAt: formatNow(), updatedAt: formatNow(), factor, otp });
   closeTop();
   applySnFilters();
   showToast("新增成功", "success");
@@ -455,6 +465,7 @@ function confirmSnEdit(id) {
     return;
   }
   row.sn = sn;
+  row.shield = shieldValue();
   row.status = status.value;
   if (otp) row.otp = otp;
   row.updatedAt = formatNow();
