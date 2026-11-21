@@ -241,7 +241,7 @@ function openBind(id) {
     <div class="dialog-header"><h2>绑定动态口令</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
     <div class="dialog-body">
       <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token令牌"], "")}</div></div>
-      <div class="form-row"><label><span class="req">*</span>动态密码卡SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.sn)}" autocomplete="off" /></div></div>
+      <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.sn)}" autocomplete="off" /></div></div>
     </div>
     <div class="dialog-footer"><button type="button" class="btn" data-action="close-layer">取消</button><button type="button" class="btn btn-primary" data-action="user-confirm-bind" data-id="${esc(row.id)}">确认</button></div>
   </div></div>`);
