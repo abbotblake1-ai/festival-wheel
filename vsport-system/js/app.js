@@ -237,9 +237,12 @@ function openUserEdit(id) {
 function openBind(id) {
   const row = userRows.find((item) => item.id === id);
   if (!row) return;
-  openMask(`<div class="mask layer-bind"><div class="dialog small" role="dialog" aria-modal="true" aria-label="绑定动态口令">
+  openMask(`<div class="mask layer-bind"><div class="dialog bind" role="dialog" aria-modal="true" aria-label="绑定动态口令">
     <div class="dialog-header"><h2>绑定动态口令</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
-    <div class="dialog-body"><div class="form-row"><label><span class="req">*</span>动态密码卡SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.sn)}" autocomplete="off" /></div></div></div>
+    <div class="dialog-body">
+      <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token令牌"], "")}</div></div>
+      <div class="form-row"><label><span class="req">*</span>动态密码卡SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.sn)}" autocomplete="off" /></div></div>
+    </div>
     <div class="dialog-footer"><button type="button" class="btn" data-action="close-layer">取消</button><button type="button" class="btn btn-primary" data-action="user-confirm-bind" data-id="${esc(row.id)}">确认</button></div>
   </div></div>`);
 }
@@ -318,11 +321,13 @@ function confirmUserEdit(id) {
 
 function confirmBind(id) {
   const row = userRows.find((item) => item.id === id);
+  const picked = document.querySelector('input[name="bindShield"]:checked');
   const sn = document.getElementById("bindSn").value.trim();
-  if (!row || !sn) {
-    showToast("请输入动态密码卡SN号", "warning");
+  if (!row || !picked || !sn) {
+    showToast("请完整填写必填项", "warning");
     return;
   }
+  row.shield = picked.value;
   row.sn = sn;
   closeTop();
   showToast("绑定成功", "success");

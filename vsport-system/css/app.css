@@ -662,6 +662,8 @@ textarea.input {
 .pager button:disabled { color: #c0c4cc; cursor: not-allowed; }
 .dialog.narrow { width: 560px; }
 .dialog.small { width: 440px; }
+.dialog.bind { width: 520px; }
+.dialog.bind .form-row > label { width: 148px; }
 .field-error { margin: 4px 0 0; color: #f56c6c; font-size: 12px; line-height: 1.4; }
 .pass-wrap { position: relative; }
 .pass-wrap .input { width: 100%; padding-right: 36px; }
