@@ -210,7 +210,7 @@ function userForm(row) {
     <div class="form-row"><label><span class="req">*</span>角色</label><div class="field">${choiceSelect("draftRole", editing ? row.role : "", ROLES, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>归属部门</label><div class="field">${choiceSelect("draftDept", editing ? row.dept : "", DEPTS, "请选择归属部门")}</div></div>
     <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token令牌"], shield)}</div></div>
-    <div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
+    <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>岗位</label><div class="field">${choiceSelect("draftPost", editing ? row.post : "", POSTS, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号有效期</label><div class="field">${radios("draftValidity", ["永久", "临时"], editing ? row.validity : "永久")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号权限</label><div class="field">${choiceSelect("draftPerm", editing ? row.perm : "一般管理员", PERMS, "请选择")}</div></div>`;
@@ -417,7 +417,7 @@ function shieldField(current) {
 
 function openSnAdd() {
   const body = `${shieldField("")}
-    <div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
+    <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>密码因子</label><div class="field"><input id="snFactor" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], "正常")}</div></div>`;
@@ -432,7 +432,7 @@ function openSnEdit(id) {
   const row = snRows.find((item) => item.id === id);
   if (!row) return;
   const body = `${shieldField(row.shield)}
-    <div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="snNumber" class="input" value="${esc(row.sn)}" autocomplete="off" /></div></div>
+    <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" value="${esc(row.sn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" value="" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], row.status)}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="修改SN号">
