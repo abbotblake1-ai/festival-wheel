@@ -207,11 +207,10 @@ function userForm(row) {
   const shieldSn = editing ? row.shieldSn : "";
   return `<div class="form-row"><label><span class="req">*</span>用户名称</label><div class="field">${name}</div></div>
     ${password}
-    <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token令牌"], shield)}</div></div>
-    <div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>角色</label><div class="field">${choiceSelect("draftRole", editing ? row.role : "", ROLES, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>归属部门</label><div class="field">${choiceSelect("draftDept", editing ? row.dept : "", DEPTS, "请选择归属部门")}</div></div>
-    <div class="form-row"><label>动态密码卡SN号</label><div class="field"><input id="draftUserSn" class="input" placeholder="请输入" value="${esc(editing ? row.sn : "")}" autocomplete="off" /></div></div>
+    <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token令牌"], shield)}</div></div>
+    <div class="form-row"><label><span class="req">*</span>SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>岗位</label><div class="field">${choiceSelect("draftPost", editing ? row.post : "", POSTS, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号有效期</label><div class="field">${radios("draftValidity", ["永久", "临时"], editing ? row.validity : "永久")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号权限</label><div class="field">${choiceSelect("draftPerm", editing ? row.perm : "一般管理员", PERMS, "请选择")}</div></div>`;
@@ -283,7 +282,7 @@ function confirmUserAdd() {
     perm,
     validity: validity.value,
     status: "正常",
-    sn: document.getElementById("draftUserSn").value.trim(),
+    sn: "",
     shield,
     shieldSn,
     password,
@@ -310,7 +309,6 @@ function confirmUserEdit(id) {
   row.post = post;
   row.perm = perm;
   row.validity = validity.value;
-  row.sn = document.getElementById("draftUserSn").value.trim();
   row.shield = shield;
   row.shieldSn = shieldSn;
   closeTop();
