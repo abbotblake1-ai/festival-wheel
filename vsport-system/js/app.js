@@ -44,6 +44,19 @@ const userRows = [
   password: "",
 }));
 
+const boundUsers = {
+  amelia: { shield: "Token令牌", shieldSn: "8659623013352" },
+  stevin: { shield: "海月盾", shieldSn: "8000072353" },
+  apiautotest1544: { shield: "Token令牌", shieldSn: "8659623966970" },
+};
+userRows.forEach((row) => {
+  const bound = boundUsers[row.name];
+  if (!bound) return;
+  row.shield = bound.shield;
+  row.shieldSn = bound.shieldSn;
+  row.sn = bound.shieldSn;
+});
+
 let userFiltered = userRows.slice();
 let userPage = 1;
 let userSelection = new Set();
@@ -152,7 +165,7 @@ function renderUsers() {
       <button type="button" class="op-btn op-green" data-action="user-reset-password" data-id="${esc(row.id)}">重置密码</button>
       <button type="button" class="op-btn op-blue" data-action="user-verify" data-id="${esc(row.id)}">验证</button>
       <button type="button" class="op-btn op-green" data-action="user-reset-google" data-id="${esc(row.id)}">重置谷歌验证</button>
-      <button type="button" class="op-btn op-blue" data-action="user-bind" data-id="${esc(row.id)}">绑定动态口令</button>
+      <button type="button" class="op-btn ${row.shieldSn ? "op-red" : "op-green"}" data-action="user-bind" data-id="${esc(row.id)}">${row.shieldSn ? "换绑动态口令" : "绑定动态口令"}</button>
     </div></td>
   </tr>`).join("") || '<tr><td class="empty" colspan="8">暂无数据</td></tr>';
   document.getElementById("userCheckAll").checked = rows.length > 0 && rows.every((row) => userSelection.has(row.id));
@@ -240,8 +253,8 @@ function openBind(id) {
   openMask(`<div class="mask layer-bind"><div class="dialog bind" role="dialog" aria-modal="true" aria-label="绑定动态口令">
     <div class="dialog-header"><h2>绑定动态口令</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
     <div class="dialog-body">
-      <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token令牌"], "")}</div></div>
-      <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.sn)}" autocomplete="off" /></div></div>
+      <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token令牌"], row.shield)}</div></div>
+      <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.shieldSn || row.sn)}" autocomplete="off" /></div></div>
     </div>
     <div class="dialog-footer"><button type="button" class="btn" data-action="close-layer">取消</button><button type="button" class="btn btn-primary" data-action="user-confirm-bind" data-id="${esc(row.id)}">确认</button></div>
   </div></div>`);
@@ -328,8 +341,10 @@ function confirmBind(id) {
     return;
   }
   row.shield = picked.value;
+  row.shieldSn = sn;
   row.sn = sn;
   closeTop();
+  renderUsers();
   showToast("绑定成功", "success");
 }
 

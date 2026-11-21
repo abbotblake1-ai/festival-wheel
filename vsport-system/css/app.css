@@ -645,6 +645,7 @@ textarea.input {
 .op-orange { background: #e6a23c; }
 .op-blue { background: #409eff; }
 .op-green { background: #67c23a; }
+.op-red { background: var(--danger); }
 .op-btn:hover { filter: brightness(1.05); }
 .linkish { border: 0; background: transparent; color: var(--primary); padding: 0 4px; }
 .linkish.danger { color: var(--danger); }
