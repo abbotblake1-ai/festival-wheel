@@ -224,6 +224,7 @@ function userForm(row) {
     <div class="form-row"><label><span class="req">*</span>归属部门</label><div class="field">${choiceSelect("draftDept", editing ? row.dept : "", DEPTS, "请选择归属部门")}</div></div>
     <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token2令牌"], shield)}</div></div>
     <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
+    <p class="shield-rule">一个后台账号只能选择海月盾或 Token2令牌其中一种，不能同时使用。同一个物理盾 SN 可以绑定多个后台账号。</p>
     <div class="form-row"><label><span class="req">*</span>岗位</label><div class="field">${choiceSelect("draftPost", editing ? row.post : "", POSTS, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号有效期</label><div class="field">${radios("draftValidity", ["永久", "临时"], editing ? row.validity : "永久")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号权限</label><div class="field">${choiceSelect("draftPerm", editing ? row.perm : "一般管理员", PERMS, "请选择")}</div></div>`;
@@ -255,6 +256,7 @@ function openBind(id) {
     <div class="dialog-body">
       <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token2令牌"], row.shield)}</div></div>
       <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.shieldSn || row.sn)}" autocomplete="off" /></div></div>
+      <p class="shield-rule">一个后台账号只能选择海月盾或 Token2令牌其中一种，不能同时使用。同一个物理盾 SN 可以绑定多个后台账号。</p>
     </div>
     <div class="dialog-footer"><button type="button" class="btn" data-action="close-layer">取消</button><button type="button" class="btn btn-primary" data-action="user-confirm-bind" data-id="${esc(row.id)}">确认</button></div>
   </div></div>`);
@@ -363,7 +365,9 @@ const snRows = [
   ["799996570", "2024-08-23 15:20:00", "2024-08-23 15:20:00"],
   ["799996568", "2024-08-23 15:20:00", "2024-08-23 15:20:00"],
 ].map(([sn, createdAt, updatedAt], index) => {
-  const shield = index % 2 === 1 && tokenSlot < tokenSns.length ? "Token2令牌" : "海月盾";
+  let shield = "海月盾";
+  if (index === 2 || index === 4) shield = "Token令牌";
+  else if (index % 2 === 1 && tokenSlot < tokenSns.length) shield = "Token2令牌";
   return {
     id: "sn" + (index + 1),
     sn: shield === "Token2令牌" ? tokenSns[tokenSlot++] : sn,
@@ -432,13 +436,17 @@ function shieldValue() {
 }
 
 function shieldField(current) {
-  return `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token2令牌"], current || "")}</div></div>`;
+  return `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token2令牌", "Token令牌"], current || "")}</div></div>`;
+}
+
+function usesToken(shield) {
+  return shield === "Token令牌" || shield === "Token2令牌";
 }
 
 function syncSnFactorLabel() {
   const label = document.getElementById("snFactorLabel");
   if (!label) return;
-  label.innerHTML = `<span class="req">*</span>${shieldValue() === "Token2令牌" ? "TOKEN" : "密码因子"}`;
+  label.innerHTML = `<span class="req">*</span>${usesToken(shieldValue()) ? "TOKEN" : "密码因子"}`;
 }
 
 function openSnAdd() {
@@ -459,6 +467,7 @@ function openSnEdit(id) {
   if (!row) return;
   const body = `${shieldField(row.shield)}
     <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" value="${esc(row.sn)}" autocomplete="off" /></div></div>
+    <div class="form-row"><label id="snFactorLabel"><span class="req">*</span>${usesToken(row.shield) ? "TOKEN" : "密码因子"}</label><div class="field"><input id="snFactor" class="input" value="${esc(row.factor)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" value="" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], row.status)}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="修改SN号">
@@ -506,10 +515,11 @@ function confirmSnAdd() {
 function confirmSnEdit(id) {
   const row = snRows.find((item) => item.id === id);
   const sn = document.getElementById("snNumber").value.trim();
+  const factor = document.getElementById("snFactor").value.trim();
   const otp = document.getElementById("snOtp").value.trim();
   const status = document.querySelector('input[name="snDraftStatus"]:checked');
   const shield = shieldValue();
-  if (!row || !shield || !sn || !status) {
+  if (!row || !shield || !sn || !factor || !otp || !status) {
     showToast("请完整填写必填项", "warning");
     return;
   }
@@ -520,7 +530,8 @@ function confirmSnEdit(id) {
   row.sn = sn;
   row.shield = shield;
   row.status = status.value;
-  if (otp) row.otp = otp;
+  row.factor = factor;
+  row.otp = otp;
   row.updatedAt = formatNow();
   closeTop();
   applySnFilters();
@@ -539,6 +550,26 @@ function confirmSnDelete() {
   showToast("删除成功", "success");
 }
 
+function openPrd() {
+  openMask(`<div class="mask layer-prd"><div class="dialog" role="dialog" aria-modal="true" aria-label="需求PRD">
+    <div class="dialog-header"><h2>需求PRD</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
+    <div class="dialog-body prd">
+      <h3>1. 用户管理</h3>
+      <p>新增用户、修改用户和绑定动态口令里，物理盾类型只有两个选项：海月盾、Token2令牌。一个后台账号只能选择其中一种，不能同时使用两种。物理盾SN号保持必填。</p>
+      <h3>2. SN号管理</h3>
+      <p>新增、修改和列表中，物理盾类型有三种：海月盾、Token2令牌、Token令牌。</p>
+      <ul>
+        <li>Token2令牌：物理盾SN号、TOKEN、动态密码都是必填。</li>
+        <li>Token令牌：与 Token2令牌相同，物理盾SN号、TOKEN、动态密码都是必填。</li>
+        <li>海月盾：因子字段仍叫密码因子，并保持必填。物理盾SN号和动态密码同样必填。</li>
+      </ul>
+      <h3>3. 绑定规则</h3>
+      <p>一个后台账号只能使用海月盾或 Token2令牌其中一种，不能两种都用。</p>
+      <p>同一个物理盾 SN 可以绑定到多个后台账号。第二个账号填写已被使用的 SN 时，系统允许保存，不会因为 SN 重复而拦截。</p>
+    </div>
+    <div class="dialog-footer"><button type="button" class="btn btn-primary" data-action="close-layer">关闭</button></div>
+  </div></div>`);
+}
 
 function showMenu(page) {
   if (!LABELS[page]) page = "users";
@@ -653,6 +684,7 @@ document.addEventListener("click", (event) => {
   } else if (action === "sn-confirm-delete") confirmSnDelete();
   else if (action === "sn-confirm-add") confirmSnAdd();
   else if (action === "sn-confirm-edit") confirmSnEdit(actionEl.dataset.id);
+  else if (action === "open-prd") openPrd();
   else if (action === "sn-page") {
     const pages = Math.max(1, Math.ceil(snFiltered.length / PAGE_SIZE));
     const next = Number(actionEl.dataset.pageNum);
