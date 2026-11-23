@@ -435,10 +435,16 @@ function shieldField(current) {
   return `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token2令牌"], current || "")}</div></div>`;
 }
 
+function syncSnFactorLabel() {
+  const label = document.getElementById("snFactorLabel");
+  if (!label) return;
+  label.innerHTML = `<span class="req">*</span>${shieldValue() === "Token2令牌" ? "TOKEN" : "密码因子"}`;
+}
+
 function openSnAdd() {
   const body = `${shieldField("")}
     <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
-    <div class="form-row"><label><span class="req">*</span>密码因子</label><div class="field"><input id="snFactor" class="input" autocomplete="off" /></div></div>
+    <div class="form-row"><label id="snFactorLabel"><span class="req">*</span>密码因子</label><div class="field"><input id="snFactor" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], "正常")}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="新增SN号">
@@ -655,6 +661,10 @@ document.addEventListener("click", (event) => {
       renderSn();
     }
   } else if (action === "close-layer") closeTop();
+});
+
+document.addEventListener("change", (event) => {
+  if (event.target.name === "snShield") syncSnFactorLabel();
 });
 
 document.getElementById("userCheckAll").addEventListener("change", (event) => {
