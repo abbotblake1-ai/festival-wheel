@@ -427,29 +427,8 @@ function applySnFilters() {
   renderSn();
 }
 
-function shieldValue() {
-  const picked = document.querySelector('input[name="snShield"]:checked');
-  return picked ? picked.value : "";
-}
-
-function shieldField(current) {
-  return `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token2令牌"], current || "")}</div></div>`;
-}
-
-function usesToken(shield) {
-  return shield === "Token2令牌";
-}
-
-function syncSnFactorLabel() {
-  const label = document.getElementById("snFactorLabel");
-  if (!label) return;
-  label.innerHTML = `<span class="req">*</span>${usesToken(shieldValue()) ? "TOKEN" : "密码因子"}`;
-}
-
 function openSnAdd() {
-  const body = `${shieldField("")}
-    <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
-    <div class="form-row"><label id="snFactorLabel"><span class="req">*</span>密码因子</label><div class="field"><input id="snFactor" class="input" autocomplete="off" /></div></div>
+  const body = `<div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], "正常")}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="新增SN号">
@@ -462,9 +441,7 @@ function openSnAdd() {
 function openSnEdit(id) {
   const row = snRows.find((item) => item.id === id);
   if (!row) return;
-  const body = `${shieldField(row.shield)}
-    <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" value="${esc(row.sn)}" autocomplete="off" /></div></div>
-    <div class="form-row"><label id="snFactorLabel"><span class="req">*</span>${usesToken(row.shield) ? "TOKEN" : "密码因子"}</label><div class="field"><input id="snFactor" class="input" value="${esc(row.factor)}" autocomplete="off" /></div></div>
+  const body = `<div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" value="${esc(row.sn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" value="" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], row.status)}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="修改SN号">
@@ -491,11 +468,9 @@ function askSnDelete(ids) {
 
 function confirmSnAdd() {
   const sn = document.getElementById("snNumber").value.trim();
-  const factor = document.getElementById("snFactor").value.trim();
   const otp = document.getElementById("snOtp").value.trim();
   const status = document.querySelector('input[name="snDraftStatus"]:checked');
-  const shield = shieldValue();
-  if (!shield || !sn || !factor || !otp || !status) {
+  if (!sn || !otp || !status) {
     showToast("请完整填写必填项", "warning");
     return;
   }
@@ -503,7 +478,7 @@ function confirmSnAdd() {
     showToast("该SN号已存在", "warning");
     return;
   }
-  snRows.unshift({ id: "sn" + Date.now(), sn, shield, status: status.value, createdAt: formatNow(), updatedAt: formatNow(), factor, otp });
+  snRows.unshift({ id: "sn" + Date.now(), sn, shield: "海月盾", status: status.value, createdAt: formatNow(), updatedAt: formatNow(), factor: "", otp });
   closeTop();
   applySnFilters();
   showToast("新增成功", "success");
@@ -512,11 +487,9 @@ function confirmSnAdd() {
 function confirmSnEdit(id) {
   const row = snRows.find((item) => item.id === id);
   const sn = document.getElementById("snNumber").value.trim();
-  const factor = document.getElementById("snFactor").value.trim();
   const otp = document.getElementById("snOtp").value.trim();
   const status = document.querySelector('input[name="snDraftStatus"]:checked');
-  const shield = shieldValue();
-  if (!row || !shield || !sn || !factor || !otp || !status) {
+  if (!row || !sn || !otp || !status) {
     showToast("请完整填写必填项", "warning");
     return;
   }
@@ -525,9 +498,7 @@ function confirmSnEdit(id) {
     return;
   }
   row.sn = sn;
-  row.shield = shield;
   row.status = status.value;
-  row.factor = factor;
   row.otp = otp;
   row.updatedAt = formatNow();
   closeTop();
@@ -698,11 +669,7 @@ document.addEventListener("click", (event) => {
       snPage = next;
       renderSn();
     }
-  } else if (action === "close-layer") closeTop();
-});
-
-document.addEventListener("change", (event) => {
-  if (event.target.name === "snShield") syncSnFactorLabel();
+  }   else if (action === "close-layer") closeTop();
 });
 
 document.getElementById("userCheckAll").addEventListener("change", (event) => {
