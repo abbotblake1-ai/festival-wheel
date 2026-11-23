@@ -45,9 +45,9 @@ const userRows = [
 }));
 
 const boundUsers = {
-  amelia: { shield: "Token令牌", shieldSn: "8659623013352" },
+  amelia: { shield: "Token2令牌", shieldSn: "8659623013352" },
   stevin: { shield: "海月盾", shieldSn: "8000072353" },
-  apiautotest1544: { shield: "Token令牌", shieldSn: "8659623966970" },
+  apiautotest1544: { shield: "Token2令牌", shieldSn: "8659623966970" },
 };
 userRows.forEach((row) => {
   const bound = boundUsers[row.name];
@@ -222,7 +222,7 @@ function userForm(row) {
     ${password}
     <div class="form-row"><label><span class="req">*</span>角色</label><div class="field">${choiceSelect("draftRole", editing ? row.role : "", ROLES, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>归属部门</label><div class="field">${choiceSelect("draftDept", editing ? row.dept : "", DEPTS, "请选择归属部门")}</div></div>
-    <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token令牌"], shield)}</div></div>
+    <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token2令牌"], shield)}</div></div>
     <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>岗位</label><div class="field">${choiceSelect("draftPost", editing ? row.post : "", POSTS, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号有效期</label><div class="field">${radios("draftValidity", ["永久", "临时"], editing ? row.validity : "永久")}</div></div>
@@ -253,7 +253,7 @@ function openBind(id) {
   openMask(`<div class="mask layer-bind"><div class="dialog bind" role="dialog" aria-modal="true" aria-label="绑定动态口令">
     <div class="dialog-header"><h2>绑定动态口令</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
     <div class="dialog-body">
-      <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token令牌"], row.shield)}</div></div>
+      <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token2令牌"], row.shield)}</div></div>
       <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.shieldSn || row.sn)}" autocomplete="off" /></div></div>
     </div>
     <div class="dialog-footer"><button type="button" class="btn" data-action="close-layer">取消</button><button type="button" class="btn btn-primary" data-action="user-confirm-bind" data-id="${esc(row.id)}">确认</button></div>
@@ -363,10 +363,10 @@ const snRows = [
   ["799996570", "2024-08-23 15:20:00", "2024-08-23 15:20:00"],
   ["799996568", "2024-08-23 15:20:00", "2024-08-23 15:20:00"],
 ].map(([sn, createdAt, updatedAt], index) => {
-  const shield = index % 2 === 1 && tokenSlot < tokenSns.length ? "Token令牌" : "海月盾";
+  const shield = index % 2 === 1 && tokenSlot < tokenSns.length ? "Token2令牌" : "海月盾";
   return {
     id: "sn" + (index + 1),
-    sn: shield === "Token令牌" ? tokenSns[tokenSlot++] : sn,
+    sn: shield === "Token2令牌" ? tokenSns[tokenSlot++] : sn,
     shield,
     status: "正常",
     createdAt,
@@ -432,7 +432,7 @@ function shieldValue() {
 }
 
 function shieldField(current) {
-  return `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token令牌"], current || "")}</div></div>`;
+  return `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token2令牌"], current || "")}</div></div>`;
 }
 
 function openSnAdd() {
