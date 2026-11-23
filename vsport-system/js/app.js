@@ -554,18 +554,28 @@ function openPrd() {
   openMask(`<div class="mask layer-prd"><div class="dialog" role="dialog" aria-modal="true" aria-label="需求PRD">
     <div class="dialog-header"><h2>需求PRD</h2><button type="button" class="dialog-close" data-action="close-layer" aria-label="关闭">×</button></div>
     <div class="dialog-body prd">
-      <h3>1. 用户管理</h3>
+      <h3>需求背景</h3>
+      <p>BV 客服合并，双方互开后台账号。BTY 使用 Token2.swiss 物理盾，与 V 后台的海月盾不同，因此 VTY 后台需新增支持绑定该盾牌。</p>
+      <h3>需求说明</h3>
+      <p>后台账号在海月盾和 Token2 物理盾中二选一绑定。账号 A 绑定海月盾，登录只验证海月盾。账号 B 绑定 Token2 盾，登录只验证 Token2 盾。不交叉验证。</p>
       <p>新增用户、修改用户和绑定动态口令里，物理盾类型只有两个选项：海月盾、Token2令牌。一个后台账号只能选择其中一种，不能同时使用两种。物理盾SN号保持必填。</p>
-      <h3>2. SN号管理</h3>
-      <p>新增、修改和列表中，物理盾类型有三种：海月盾、Token2令牌、Token令牌。</p>
+      <p>SN号管理的新增、修改和列表中，物理盾类型有三种：海月盾、Token2令牌、Token令牌。</p>
       <ul>
         <li>Token2令牌：物理盾SN号、TOKEN、动态密码都是必填。</li>
         <li>Token令牌：与 Token2令牌相同，物理盾SN号、TOKEN、动态密码都是必填。</li>
         <li>海月盾：因子字段仍叫密码因子，并保持必填。物理盾SN号和动态密码同样必填。</li>
       </ul>
-      <h3>3. 绑定规则</h3>
-      <p>一个后台账号只能使用海月盾或 Token2令牌其中一种，不能两种都用。</p>
       <p>同一个物理盾 SN 可以绑定到多个后台账号。第二个账号填写已被使用的 SN 时，系统允许保存，不会因为 SN 重复而拦截。</p>
+      <h3>客户端输入限制</h3>
+      <ul>
+        <li>用户名称：6–20 个字符。</li>
+        <li>用户密码：12–20 个字符。</li>
+        <li>物理盾类型：必填。用户新增、修改和绑定动态口令只能选择海月盾或 Token2令牌其中一种。</li>
+        <li>物理盾SN号：必填。</li>
+        <li>Token2令牌、Token令牌的新增：还需要填写 TOKEN 和动态密码，两项都必填。</li>
+        <li>海月盾：因子字段使用密码因子，必填。</li>
+        <li>同一个物理盾 SN 可以绑定多个后台账号。</li>
+      </ul>
     </div>
     <div class="dialog-footer"><button type="button" class="btn btn-primary" data-action="close-layer">关闭</button></div>
   </div></div>`);
