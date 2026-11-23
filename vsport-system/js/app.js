@@ -427,8 +427,21 @@ function applySnFilters() {
   renderSn();
 }
 
+function shieldValue() {
+  const picked = document.querySelector('input[name="snShield"]:checked');
+  return picked ? picked.value : "";
+}
+
+function syncSnFactorLabel() {
+  const label = document.getElementById("snFactorLabel");
+  if (!label) return;
+  label.innerHTML = `<span class="req">*</span>${shieldValue() === "Token2令牌" ? "TOKEN" : "密码因子"}`;
+}
+
 function openSnAdd() {
-  const body = `<div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
+  const body = `<div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("snShield", ["海月盾", "Token2令牌"], "")}</div></div>
+    <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="snNumber" class="input" autocomplete="off" /></div></div>
+    <div class="form-row"><label id="snFactorLabel"><span class="req">*</span>密码因子</label><div class="field"><input id="snFactor" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label><span class="req">*</span>动态密码</label><div class="field"><input id="snOtp" class="input" autocomplete="off" /></div></div>
     <div class="form-row"><label>状态</label><div class="field">${radios("snDraftStatus", ["正常", "停用"], "正常")}</div></div>`;
   openMask(`<div class="mask layer-sn"><div class="dialog narrow" role="dialog" aria-modal="true" aria-label="新增SN号">
@@ -468,9 +481,11 @@ function askSnDelete(ids) {
 
 function confirmSnAdd() {
   const sn = document.getElementById("snNumber").value.trim();
+  const factor = document.getElementById("snFactor").value.trim();
   const otp = document.getElementById("snOtp").value.trim();
   const status = document.querySelector('input[name="snDraftStatus"]:checked');
-  if (!sn || !otp || !status) {
+  const shield = shieldValue();
+  if (!shield || !sn || !factor || !otp || !status) {
     showToast("请完整填写必填项", "warning");
     return;
   }
@@ -478,7 +493,7 @@ function confirmSnAdd() {
     showToast("该SN号已存在", "warning");
     return;
   }
-  snRows.unshift({ id: "sn" + Date.now(), sn, shield: "海月盾", status: status.value, createdAt: formatNow(), updatedAt: formatNow(), factor: "", otp });
+  snRows.unshift({ id: "sn" + Date.now(), sn, shield, status: status.value, createdAt: formatNow(), updatedAt: formatNow(), factor, otp });
   closeTop();
   applySnFilters();
   showToast("新增成功", "success");
@@ -527,20 +542,20 @@ function openPrd() {
       <h3>需求说明</h3>
       <p>后台账号在海月盾和 Token2 物理盾中二选一绑定。账号 A 绑定海月盾，登录只验证海月盾。账号 B 绑定 Token2 盾，登录只验证 Token2 盾。不交叉验证。</p>
       <p>新增用户、修改用户和绑定动态口令里，物理盾类型只有两个选项：海月盾、Token2令牌。一个后台账号只能选择其中一种，不能同时使用两种。物理盾SN号保持必填。</p>
-      <p>SN号管理的新增、修改和列表中，物理盾类型只有两种：海月盾、Token2令牌。</p>
+      <p>SN号管理的列表中，物理盾类型只有两种：海月盾、Token2令牌。新增SN号需要选择其中一种。修改SN号不再填写物理盾类型或 TOKEN，只保留物理盾SN号、动态密码和状态。</p>
       <ul>
-        <li>Token2令牌：物理盾SN号、TOKEN、动态密码都是必填。</li>
-        <li>海月盾：因子字段仍叫密码因子，并保持必填。物理盾SN号和动态密码同样必填。</li>
+        <li>新增且选择 Token2令牌：物理盾SN号、TOKEN、动态密码都是必填。</li>
+        <li>新增且选择海月盾：因子字段仍叫密码因子，并保持必填。物理盾SN号和动态密码同样必填。</li>
       </ul>
       <p>同一个物理盾 SN 可以绑定到多个后台账号。第二个账号填写已被使用的 SN 时，系统允许保存，不会因为 SN 重复而拦截。</p>
       <h3>客户端输入限制</h3>
       <ul>
         <li>用户名称：6–20 个字符。</li>
         <li>用户密码：12–20 个字符。</li>
-        <li>物理盾类型：必填。用户新增、修改、绑定动态口令，以及 SN 新增和修改，只能选择海月盾或 Token2令牌其中一种。</li>
+        <li>物理盾类型：用户新增、修改、绑定动态口令，以及 SN 新增必填，只能选择海月盾或 Token2令牌其中一种。修改SN号不显示该字段。</li>
         <li>物理盾SN号：必填。</li>
         <li>Token2令牌的新增：还需要填写 TOKEN 和动态密码，两项都必填。</li>
-        <li>海月盾：因子字段使用密码因子，必填。</li>
+        <li>海月盾的新增：因子字段使用密码因子，必填。</li>
         <li>同一个物理盾 SN 可以绑定多个后台账号。</li>
       </ul>
     </div>
@@ -670,6 +685,10 @@ document.addEventListener("click", (event) => {
       renderSn();
     }
   }   else if (action === "close-layer") closeTop();
+});
+
+document.addEventListener("change", (event) => {
+  if (event.target.name === "snShield") syncSnFactorLabel();
 });
 
 document.getElementById("userCheckAll").addEventListener("change", (event) => {
