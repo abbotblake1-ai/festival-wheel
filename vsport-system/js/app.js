@@ -224,7 +224,6 @@ function userForm(row) {
     <div class="form-row"><label><span class="req">*</span>归属部门</label><div class="field">${choiceSelect("draftDept", editing ? row.dept : "", DEPTS, "请选择归属部门")}</div></div>
     <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("userShield", ["海月盾", "Token2令牌"], shield)}</div></div>
     <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="userShieldSn" class="input" value="${esc(shieldSn)}" autocomplete="off" /></div></div>
-    <p class="shield-rule">一个后台账号只能选择海月盾或 Token2令牌其中一种，不能同时使用。同一个物理盾 SN 可以绑定多个后台账号。</p>
     <div class="form-row"><label><span class="req">*</span>岗位</label><div class="field">${choiceSelect("draftPost", editing ? row.post : "", POSTS, "请选择")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号有效期</label><div class="field">${radios("draftValidity", ["永久", "临时"], editing ? row.validity : "永久")}</div></div>
     <div class="form-row"><label><span class="req">*</span>账号权限</label><div class="field">${choiceSelect("draftPerm", editing ? row.perm : "一般管理员", PERMS, "请选择")}</div></div>`;
@@ -256,7 +255,6 @@ function openBind(id) {
     <div class="dialog-body">
       <div class="form-row"><label><span class="req">*</span>物理盾类型</label><div class="field">${radios("bindShield", ["海月盾", "Token2令牌"], row.shield)}</div></div>
       <div class="form-row"><label><span class="req">*</span>物理盾SN号</label><div class="field"><input id="bindSn" class="input" placeholder="请输入" value="${esc(row.shieldSn || row.sn)}" autocomplete="off" /></div></div>
-      <p class="shield-rule">一个后台账号只能选择海月盾或 Token2令牌其中一种，不能同时使用。同一个物理盾 SN 可以绑定多个后台账号。</p>
     </div>
     <div class="dialog-footer"><button type="button" class="btn" data-action="close-layer">取消</button><button type="button" class="btn btn-primary" data-action="user-confirm-bind" data-id="${esc(row.id)}">确认</button></div>
   </div></div>`);

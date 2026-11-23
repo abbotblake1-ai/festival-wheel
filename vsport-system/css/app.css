@@ -667,8 +667,6 @@ textarea.input {
 .dialog.bind { width: 520px; }
 .dialog.bind .form-row > label { width: 148px; }
 .field-error { margin: 4px 0 0; color: #f56c6c; font-size: 12px; line-height: 1.4; }
-.shield-rule { margin: -4px 0 12px 124px; color: var(--secondary); font-size: 12px; line-height: 1.6; }
-.dialog.bind .shield-rule { margin-left: 148px; }
 .prd h3 { margin: 18px 0 8px; font-size: 15px; color: var(--text); }
 .prd h3:first-child { margin-top: 0; }
 .prd p, .prd li { margin: 0 0 8px; color: var(--regular); font-size: 14px; line-height: 1.75; }
