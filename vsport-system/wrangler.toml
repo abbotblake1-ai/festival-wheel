@@ -1,0 +1,7 @@
+name = "vsport-system"
+compatibility_date = "2025-04-01"
+workers_dev = true
+
+[assets]
+directory = "."
+not_found_handling = "none"
